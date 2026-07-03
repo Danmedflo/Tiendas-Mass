@@ -1,0 +1,43 @@
+<!--
+Archivo: home.html
+Aplicación: core
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Página principal del sistema web de ventas online.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Inicio | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Bienvenido a Tienda Mass</h1>
+        <p>
+            Compra productos de consumo diario desde casa de manera rápida,
+            segura y sencilla.
+        </p>
+        <a href="#" class="btn-primary">Ver productos</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature-card">
+        <h3>🚚 Envío rápido</h3>
+        <p>Entrega de pedidos según zona de cobertura.</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>💳 Pagos seguros</h3>
+        <p>Yape, Plin, tarjeta, transferencia y pago contra entrega.</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>📦 Stock actualizado</h3>
+        <p>Control de inventario y productos disponibles en tiempo real.</p>
+    </div>
+</section>
+
+{% endblock %}

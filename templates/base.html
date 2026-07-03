@@ -1,0 +1,47 @@
+<!--
+Archivo: base.html
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Plantilla base reutilizable para todas las páginas del sistema.
+-->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tiendas Mass{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+<header class="main-header">
+    <nav class="navbar">
+        <a href="{% url 'core:home' %}" class="logo">
+            🛒 Tienda <span>Mass</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Productos</a></li>
+            <li><a href="#">Carrito</a></li>
+            <li><a href="#">Login</a></li>
+            <li><a href="#">Registro</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="footer">
+    <p>Sistema Web Tiendas Mass | Desarrollado con Python, Django y MySQL</p>
+</footer>
+
+</body>
+</html>
