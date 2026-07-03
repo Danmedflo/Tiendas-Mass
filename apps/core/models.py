@@ -1,3 +1,9 @@
-from django.db import models
+"""
+Archivo: models.py
+Aplicación: core
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Aplicación principal del sistema. Por ahora no requiere modelos propios.
+"""
 
-# Create your models here.
+# Esta aplicación gestiona vistas generales como inicio, navegación y páginas informativas.
