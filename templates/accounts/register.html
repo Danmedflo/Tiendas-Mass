@@ -1,0 +1,97 @@
+<!--
+Archivo: register.html
+Aplicación: accounts
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista para registrar nuevos clientes.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Registro | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="auth-container">
+
+    <div class="auth-card register-card">
+        <h1>Crear cuenta</h1>
+        <p>Regístrate para comprar productos en Tienda Mass.</p>
+
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombres</label>
+                    {{ form.nombres }}
+                    {{ form.nombres.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    {{ form.apellidos }}
+                    {{ form.apellidos.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>DNI</label>
+                    {{ form.dni }}
+                    {{ form.dni.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    {{ form.telefono }}
+                    {{ form.telefono.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Email</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Dirección</label>
+                    {{ form.direccion }}
+                    {{ form.direccion.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Distrito</label>
+                    {{ form.distrito }}
+                    {{ form.distrito.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Confirmar contraseña</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary auth-button">Crear cuenta</button>
+        </form>
+
+        <p class="auth-link">
+            ¿Ya tienes cuenta?
+            <a href="{% url 'accounts:login' %}">Inicia sesión</a>
+        </p>
+    </div>
+
+</section>
+
+{% endblock %}

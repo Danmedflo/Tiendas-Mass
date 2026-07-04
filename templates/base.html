@@ -28,11 +28,27 @@ Descripción: Plantilla base reutilizable para todas las páginas del sistema.
             <li><a href="{% url 'core:home' %}">Inicio</a></li>
             <li><a href="{% url 'catalog:product_list' %}">Productos</a></li>
             <li><a href="#">Carrito</a></li>
-            <li><a href="#">Login</a></li>
-            <li><a href="#">Registro</a></li>
+
+            {% if user.is_authenticated %}
+                <li><a href="#">Hola, {{ user.first_name|default:user.username }}</a></li>
+                <li><a href="{% url 'accounts:logout' %}">Salir</a></li>
+            {% else %}
+                <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                <li><a href="{% url 'accounts:register' %}">Registro</a></li>
+            {% endif %}
         </ul>
     </nav>
 </header>
+
+{% if messages %}
+    <section class="messages-container">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </section>
+{% endif %}
 
 <main>
     {% block content %}
