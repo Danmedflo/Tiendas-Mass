@@ -121,7 +121,11 @@ Descripción: Vista del catálogo de productos con filtros, búsqueda y ordenami
                     </a>
 
                     {% if producto.stock > 0 %}
-                        <a href="#" class="btn-cart">Agregar</a>
+                        <form method="post" action="{% url 'orders:add_to_cart' producto.id %}" class="add-cart-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="cantidad" value="1">
+                            <button type="submit" class="btn-cart">Agregar</button>
+                        </form>
                     {% else %}
                         <button class="btn-disabled" disabled>No disponible</button>
                     {% endif %}

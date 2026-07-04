@@ -1,0 +1,113 @@
+<!--
+Archivo: cart_detail.html
+Aplicación: orders
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista del carrito de compras con productos, cantidades y totales.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Carrito | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Carrito de compras</h1>
+    <p>Revisa tus productos antes de confirmar el pedido.</p>
+</section>
+
+<section class="cart-container">
+
+    {% if items %}
+
+        <div class="cart-table-container">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.producto.nombre }}</strong>
+                                <br>
+                                <small>{{ item.producto.codigo }}</small>
+                            </td>
+
+                            <td>S/ {{ item.producto.precio }}</td>
+
+                            <td>
+                                <form method="post" action="{% url 'orders:update_cart' item.producto.id %}" class="quantity-form">
+                                    {% csrf_token %}
+                                    <input
+                                        type="number"
+                                        name="cantidad"
+                                        min="1"
+                                        max="{{ item.producto.stock }}"
+                                        value="{{ item.cantidad }}"
+                                    >
+                                    <button type="submit" class="btn-small">Actualizar</button>
+                                </form>
+                            </td>
+
+                            <td>S/ {{ item.subtotal }}</td>
+
+                            <td>
+                                <a href="{% url 'orders:remove_from_cart' item.producto.id %}" class="btn-remove">
+                                    Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <aside class="cart-summary">
+            <h2>Resumen</h2>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <strong>S/ {{ subtotal }}</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>IGV 18%</span>
+                <strong>S/ {{ igv }}</strong>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total parcial</span>
+                <strong>S/ {{ total }}</strong>
+            </div>
+
+            <a href="{% url 'orders:checkout' %}" class="btn-primary btn-full">
+                Continuar compra
+            </a>
+
+            <a href="{% url 'catalog:product_list' %}" class="btn-secondary btn-full">
+                Seguir comprando
+            </a>
+        </aside>
+
+    {% else %}
+
+        <div class="empty-state">
+            <h3>Tu carrito está vacío</h3>
+            <p>Agrega productos desde el catálogo para iniciar tu compra.</p>
+            <a href="{% url 'catalog:product_list' %}" class="btn-primary">Ver productos</a>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
