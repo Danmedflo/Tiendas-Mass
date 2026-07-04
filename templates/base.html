@@ -25,8 +25,8 @@ Descripción: Plantilla base reutilizable para todas las páginas del sistema.
         </a>
 
         <ul class="nav-links">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Productos</a></li>
+            <li><a href="{% url 'core:home' %}">Inicio</a></li>
+            <li><a href="{% url 'catalog:product_list' %}">Productos</a></li>
             <li><a href="#">Carrito</a></li>
             <li><a href="#">Login</a></li>
             <li><a href="#">Registro</a></li>

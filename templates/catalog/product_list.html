@@ -1,0 +1,144 @@
+<!--
+Archivo: product_list.html
+Aplicación: catalog
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista del catálogo de productos con filtros, búsqueda y ordenamiento.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Productos | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Nuestros productos</h1>
+    <p>Encuentra productos de consumo diario con precios accesibles y stock actualizado.</p>
+</section>
+
+<section class="filter-section">
+    <form method="get" class="filter-form">
+
+        <div class="form-group">
+            <label for="q">Buscar producto</label>
+            <input
+                type="text"
+                id="q"
+                name="q"
+                placeholder="Ejemplo: leche, aceite, gaseosa..."
+                value="{{ busqueda }}"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="categoria">Categoría</label>
+            <select name="categoria" id="categoria">
+                <option value="">Todas las categorías</option>
+
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}"
+                        {% if categoria_id == categoria.id|stringformat:"s" %}selected{% endif %}
+                    >
+                        {{ categoria.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="disponibilidad">Disponibilidad</label>
+            <select name="disponibilidad" id="disponibilidad">
+                <option value="">Todos</option>
+                <option value="disponible" {% if disponibilidad == 'disponible' %}selected{% endif %}>
+                    Disponible
+                </option>
+                <option value="agotado" {% if disponibilidad == 'agotado' %}selected{% endif %}>
+                    Agotado
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ordenar">Ordenar por</label>
+            <select name="ordenar" id="ordenar">
+                <option value="nombre" {% if ordenar == 'nombre' %}selected{% endif %}>Nombre A-Z</option>
+                <option value="precio_menor" {% if ordenar == 'precio_menor' %}selected{% endif %}>Precio menor</option>
+                <option value="precio_mayor" {% if ordenar == 'precio_mayor' %}selected{% endif %}>Precio mayor</option>
+                <option value="stock" {% if ordenar == 'stock' %}selected{% endif %}>Mayor stock</option>
+                <option value="recientes" {% if ordenar == 'recientes' %}selected{% endif %}>Más recientes</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-primary">Filtrar</button>
+        <a href="{% url 'catalog:product_list' %}" class="btn-secondary">Limpiar</a>
+
+    </form>
+</section>
+
+<section class="product-grid">
+
+    {% for producto in productos %}
+
+        <article class="product-card">
+
+            <div class="product-image">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                {% else %}
+                    <div class="no-image">🛒</div>
+                {% endif %}
+            </div>
+
+            <div class="product-info">
+                <span class="category-label">{{ producto.categoria.nombre }}</span>
+
+                <h3>{{ producto.nombre }}</h3>
+
+                <p class="product-description">
+                    {{ producto.descripcion|default:"Producto disponible en Tienda Mass."|truncatewords:14 }}
+                </p>
+
+                <p class="product-price">S/ {{ producto.precio }}</p>
+
+                {% if producto.stock > 0 %}
+                    <p class="stock available">Stock: {{ producto.stock }}</p>
+                {% else %}
+                    <p class="stock unavailable">Agotado</p>
+                {% endif %}
+
+                {% if producto.tiene_stock_bajo %}
+                    <p class="stock-warning">⚠ Stock bajo</p>
+                {% endif %}
+
+                {% if producto.esta_por_vencer %}
+                    <p class="expiry-warning">⏰ Próximo a vencer</p>
+                {% endif %}
+
+                <div class="product-actions">
+                    <a href="{% url 'catalog:product_detail' producto.id %}" class="btn-detail">
+                        Ver detalle
+                    </a>
+
+                    {% if producto.stock > 0 %}
+                        <a href="#" class="btn-cart">Agregar</a>
+                    {% else %}
+                        <button class="btn-disabled" disabled>No disponible</button>
+                    {% endif %}
+                </div>
+            </div>
+
+        </article>
+
+    {% empty %}
+
+        <div class="empty-state">
+            <h3>No se encontraron productos</h3>
+            <p>Prueba cambiando los filtros o buscando otro producto.</p>
+        </div>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

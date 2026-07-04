@@ -1,0 +1,59 @@
+<!--
+Archivo: product_detail.html
+Aplicación: catalog
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista de detalle de un producto seleccionado.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}{{ producto.nombre }} | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="detail-container">
+
+    <div class="detail-image">
+        {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+        {% else %}
+            <div class="no-image large">🛒</div>
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+        <span class="category-label">{{ producto.categoria.nombre }}</span>
+
+        <h1>{{ producto.nombre }}</h1>
+
+        <p class="detail-code">Código: {{ producto.codigo }}</p>
+
+        <p class="detail-description">
+            {{ producto.descripcion|default:"Producto disponible para compra online en Tienda Mass." }}
+        </p>
+
+        <p class="detail-price">S/ {{ producto.precio }}</p>
+
+        {% if producto.stock > 0 %}
+            <p class="stock available">Stock disponible: {{ producto.stock }}</p>
+        {% else %}
+            <p class="stock unavailable">Producto agotado</p>
+        {% endif %}
+
+        {% if producto.fecha_vencimiento %}
+            <p class="detail-date">Fecha de vencimiento: {{ producto.fecha_vencimiento }}</p>
+        {% endif %}
+
+        <div class="detail-actions">
+            <a href="{% url 'catalog:product_list' %}" class="btn-secondary">Volver al catálogo</a>
+
+            {% if producto.stock > 0 %}
+                <a href="#" class="btn-primary">Agregar al carrito</a>
+            {% endif %}
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
