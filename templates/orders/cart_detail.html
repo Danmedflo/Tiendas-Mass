@@ -42,7 +42,7 @@ Descripción: Vista del carrito de compras con productos, cantidades y totales.
                                 <small>{{ item.producto.codigo }}</small>
                             </td>
 
-                            <td>S/ {{ item.producto.precio }}</td>
+                            <td>S/ {{ item.producto.precio|floatformat:2 }}</td>
 
                             <td>
                                 <form method="post" action="{% url 'orders:update_cart' item.producto.id %}" class="quantity-form">
@@ -58,7 +58,7 @@ Descripción: Vista del carrito de compras con productos, cantidades y totales.
                                 </form>
                             </td>
 
-                            <td>S/ {{ item.subtotal }}</td>
+                            <td>S/ {{ item.subtotal|floatformat:2 }}</td>
 
                             <td>
                                 <a href="{% url 'orders:remove_from_cart' item.producto.id %}" class="btn-remove">
@@ -76,17 +76,17 @@ Descripción: Vista del carrito de compras con productos, cantidades y totales.
 
             <div class="summary-row">
                 <span>Subtotal</span>
-                <strong>S/ {{ subtotal }}</strong>
+                <strong>S/ {{ subtotal|floatformat:2 }}</strong>
             </div>
 
             <div class="summary-row">
                 <span>IGV 18%</span>
-                <strong>S/ {{ igv }}</strong>
+                <strong>S/ {{ igv|floatformat:2 }}</strong>
             </div>
 
             <div class="summary-row total">
                 <span>Total parcial</span>
-                <strong>S/ {{ total }}</strong>
+                <strong>S/ {{ total|floatformat:2 }}</strong>
             </div>
 
             <a href="{% url 'orders:checkout' %}" class="btn-primary btn-full">

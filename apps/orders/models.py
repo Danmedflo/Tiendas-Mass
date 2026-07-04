@@ -76,12 +76,15 @@ class Pedido(models.Model):
 
     def calcular_totales(self):
         """
-        Calcula subtotal, IGV y total del pedido según los detalles registrados.
+        Calcula subtotal, IGV y total del pedido según los detalles registrados,
+        redondeando todos los importes a dos decimales.
         """
         subtotal = sum(detalle.subtotal for detalle in self.detalles.all())
-        self.subtotal = subtotal
-        self.igv = subtotal * Decimal('0.18')
-        self.total = self.subtotal + self.igv + self.costo_envio
+
+        self.subtotal = subtotal.quantize(Decimal('0.01'))
+        self.igv = (self.subtotal * Decimal('0.18')).quantize(Decimal('0.01'))
+        self.total = (self.subtotal + self.igv + self.costo_envio).quantize(Decimal('0.01'))
+
         self.save()
 
 
@@ -113,7 +116,7 @@ class DetallePedido(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Calcula el subtotal del producto dentro del pedido.
+        Calcula el subtotal del producto dentro del pedido con dos decimales.
         """
-        self.subtotal = self.precio_unitario * self.cantidad
+        self.subtotal = (self.precio_unitario * self.cantidad).quantize(Decimal('0.01'))
         super().save(*args, **kwargs)

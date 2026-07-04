@@ -28,23 +28,23 @@ Descripción: Vista de confirmación de compra y datos de entrega.
                     <strong>{{ item.producto.nombre }}</strong>
                     <p>Cantidad: {{ item.cantidad }}</p>
                 </div>
-                <span>S/ {{ item.subtotal }}</span>
+                <strong>S/ {{ item.subtotal|floatformat:2 }}</strong>
             </div>
         {% endfor %}
 
         <div class="summary-row">
             <span>Subtotal</span>
-            <strong>S/ {{ subtotal }}</strong>
+            <strong>S/ {{ subtotal|floatformat:2 }}</strong>
         </div>
 
         <div class="summary-row">
             <span>IGV 18%</span>
-            <strong>S/ {{ igv }}</strong>
+            <strong>S/ {{ igv|floatformat:2 }}</strong>
         </div>
 
         <div class="summary-row total">
             <span>Total sin envío</span>
-            <strong>S/ {{ total }}</strong>
+            <strong>S/ {{ total|floatformat:2 }}</strong>
         </div>
     </div>
 

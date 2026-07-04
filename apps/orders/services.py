@@ -62,6 +62,7 @@ def calcular_costo_envio(distrito):
 def calcular_items_carrito(carrito):
     """
     Convierte los productos guardados en sesión en información lista para mostrar.
+    Calcula subtotal, IGV y total con dos decimales.
     """
     items = []
     subtotal = Decimal('0.00')
@@ -71,7 +72,7 @@ def calcular_items_carrito(carrito):
             producto = Producto.objects.get(id=producto_id, activo=True)
             cantidad = int(cantidad)
 
-            item_subtotal = producto.precio * cantidad
+            item_subtotal = (producto.precio * cantidad).quantize(Decimal('0.01'))
             subtotal += item_subtotal
 
             items.append({
@@ -83,8 +84,9 @@ def calcular_items_carrito(carrito):
         except Producto.DoesNotExist:
             continue
 
-    igv = subtotal * Decimal('0.18')
-    total = subtotal + igv
+    subtotal = subtotal.quantize(Decimal('0.01'))
+    igv = (subtotal * Decimal('0.18')).quantize(Decimal('0.01'))
+    total = (subtotal + igv).quantize(Decimal('0.01'))
 
     return {
         'items': items,

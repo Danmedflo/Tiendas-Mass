@@ -34,28 +34,28 @@ Descripción: Vista de confirmación después de registrar un pedido.
                     <strong>{{ detalle.producto.nombre }}</strong>
                     <p>Cantidad: {{ detalle.cantidad }}</p>
                 </div>
-                <span>S/ {{ detalle.subtotal }}</span>
+                <span>S/ {{ detalle.subtotal|floatformat:2 }}</span>
             </div>
         {% endfor %}
 
         <div class="summary-row">
             <span>Subtotal</span>
-            <strong>S/ {{ pedido.subtotal }}</strong>
+            <strong>S/ {{ pedido.subtotal|floatformat:2 }}</strong>
         </div>
 
         <div class="summary-row">
             <span>IGV 18%</span>
-            <strong>S/ {{ pedido.igv }}</strong>
+            <strong>S/ {{ pedido.igv|floatformat:2 }}</strong>
         </div>
 
         <div class="summary-row">
             <span>Envío</span>
-            <strong>S/ {{ pedido.costo_envio }}</strong>
+            <strong>S/ {{ pedido.costo_envio|floatformat:2 }}</strong>
         </div>
 
         <div class="summary-row total">
             <span>Total</span>
-            <strong>S/ {{ pedido.total }}</strong>
+            <strong>S/ {{ pedido.total|floatformat:2 }}</strong>
         </div>
 
         <a href="{% url 'catalog:product_list' %}" class="btn-primary btn-full">
