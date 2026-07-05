@@ -3,7 +3,7 @@ Archivo: payment_process.html
 Aplicación: payments
 Proyecto: Sistema Web Tiendas Mass
 Autor: Daniel Medina
-Descripción: Vista para procesar pagos simulados del pedido.
+Descripción: Vista para procesar pagos simulados según el método seleccionado.
 -->
 
 {% extends 'base.html' %}
@@ -14,7 +14,7 @@ Descripción: Vista para procesar pagos simulados del pedido.
 
 <section class="page-header">
     <h1>Procesar pago</h1>
-    <p>Selecciona el método de pago para confirmar tu compra.</p>
+    <p>Selecciona el método de pago e ingresa los datos requeridos.</p>
 </section>
 
 <section class="payment-container">
@@ -53,6 +53,12 @@ Descripción: Vista para procesar pagos simulados del pedido.
     <div class="payment-form-card">
         <h2>Datos del pago</h2>
 
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
         <form method="post" class="auth-form">
             {% csrf_token %}
 
@@ -62,57 +68,105 @@ Descripción: Vista para procesar pagos simulados del pedido.
                 {{ form.metodo_pago.errors }}
             </div>
 
-            <div class="payment-methods-info">
-                <div class="payment-option">
-                    <strong>Yape / Plin:</strong>
-                    <p>Al seleccionar Yape o Plin, el sistema genera un código QR simulado para el pago.</p>
+            <div id="qrPaymentBox" class="qr-payment-box">
+                <h3>QR de pago</h3>
+                <p id="qrPaymentText">
+                    Escanea este código para simular el pago con Yape.
+                </p>
+
+                <img
+                    id="qrPaymentImage"
+                    src="{% url 'payments:payment_qr' pedido.id %}?metodo=YAPE"
+                    data-base-url="{% url 'payments:payment_qr' pedido.id %}"
+                    alt="Código QR de pago"
+                >
+
+                <p class="qr-amount">
+                    Monto: <strong>S/ {{ pedido.total }}</strong>
+                </p>
+            </div>
+
+            <div id="walletInfo" class="conditional-fields">
+                <h3>Pago con billetera digital</h3>
+                <p class="field-help">
+                    Escanea el QR con Yape o Plin. Luego ingresa el número de operación que aparecería en la aplicación.
+                </p>
+            </div>
+
+            <div id="transferInfo" class="conditional-fields">
+                <h3>Pago por transferencia</h3>
+                <p class="field-help">
+                    Ingresa el banco y el número de operación de la transferencia simulada.
+                </p>
+            </div>
+
+            <div id="operationFields" class="conditional-fields">
+                <h3 id="operationTitle">Datos de operación</h3>
+
+                <div id="bankField" class="form-group">
+                    <label>Banco</label>
+                    {{ form.banco }}
+                    {{ form.banco.errors }}
                 </div>
 
-                <div class="payment-option">
-                    <strong>Tarjeta:</strong>
-                <p>Simula aprobación de Visa o Mastercard.</p>
+                <div class="form-group">
+                    <label>Número de operación</label>
+                    {{ form.numero_operacion }}
+                    {{ form.numero_operacion.errors }}
+                </div>
             </div>
 
-            <div class="payment-option">
-                <strong>Transferencia:</strong>
-                <p>Registra una referencia bancaria simulada.</p>
+            <div id="cardFields" class="conditional-fields">
+                <h3>Datos de tarjeta</h3>
+
+                <div class="form-group">
+                    <label>Titular de la tarjeta</label>
+                    {{ form.tarjeta_titular }}
+                    {{ form.tarjeta_titular.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Número de tarjeta</label>
+                    {{ form.tarjeta_numero }}
+                    {{ form.tarjeta_numero.errors }}
+                </div>
+
+                <div class="card-grid">
+                    <div class="form-group">
+                        <label>Mes</label>
+                        {{ form.tarjeta_mes }}
+                        {{ form.tarjeta_mes.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Año</label>
+                        {{ form.tarjeta_anio }}
+                        {{ form.tarjeta_anio.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>CVV</label>
+                        {{ form.tarjeta_cvv }}
+                        {{ form.tarjeta_cvv.errors }}
+                    </div>
+                </div>
+
+                <p class="field-help">
+                    Simulación académica: el sistema valida los datos, pero no guarda el número completo ni el CVV.
+                </p>
             </div>
 
-            <div class="payment-option">
-                <strong>Contra entrega:</strong>
-                <p>El pago se confirma en la entrega, pero se registra el pedido.</p>
+            <div id="cashFields" class="conditional-fields">
+                <h3>Pago contra entrega</h3>
+                <p class="field-help">
+                    No se requiere número de operación. El pedido se registra con método de pago contra entrega.
+                </p>
             </div>
-        </div>
-    </div>
-
-<div id="qrPaymentBox" class="qr-payment-box">
-    <h3>QR de pago</h3>
-    <p id="qrPaymentText">
-        Escanea este código para simular el pago con Yape.
-    </p>
-
-    <img
-        id="qrPaymentImage"
-        src="{% url 'payments:payment_qr' pedido.id %}?metodo=YAPE"
-        data-base-url="{% url 'payments:payment_qr' pedido.id %}"
-        alt="Código QR de pago"
-    >
-
-    <p class="qr-amount">
-        Monto: <strong>S/ {{ pedido.total }}</strong>
-    </p>
-</div>
 
             <div class="form-group">
                 <label>Tipo de comprobante</label>
                 {{ form.tipo_comprobante }}
                 {{ form.tipo_comprobante.errors }}
-            </div>
-
-            <div class="form-group">
-                <label>Número de operación / referencia</label>
-                {{ form.numero_operacion }}
-                {{ form.numero_operacion.errors }}
             </div>
 
             <div class="form-group">
@@ -131,24 +185,63 @@ Descripción: Vista para procesar pagos simulados del pedido.
 
 <script>
     const metodoPago = document.getElementById('id_metodo_pago');
+
     const qrBox = document.getElementById('qrPaymentBox');
     const qrImage = document.getElementById('qrPaymentImage');
     const qrText = document.getElementById('qrPaymentText');
 
-    function actualizarQR() {
+    const walletInfo = document.getElementById('walletInfo');
+    const transferInfo = document.getElementById('transferInfo');
+    const operationFields = document.getElementById('operationFields');
+    const operationTitle = document.getElementById('operationTitle');
+    const bankField = document.getElementById('bankField');
+
+    const cardFields = document.getElementById('cardFields');
+    const cashFields = document.getElementById('cashFields');
+
+    function ocultarCamposPago() {
+        qrBox.style.display = 'none';
+        walletInfo.style.display = 'none';
+        transferInfo.style.display = 'none';
+        operationFields.style.display = 'none';
+        bankField.style.display = 'none';
+        cardFields.style.display = 'none';
+        cashFields.style.display = 'none';
+    }
+
+    function actualizarFormularioPago() {
         const metodo = metodoPago.value;
+
+        ocultarCamposPago();
 
         if (metodo === 'YAPE' || metodo === 'PLIN') {
             qrBox.style.display = 'block';
+            walletInfo.style.display = 'block';
+            operationFields.style.display = 'block';
+            bankField.style.display = 'none';
+            operationTitle.textContent = `Datos de operación ${metodo}`;
             qrImage.src = `${qrImage.dataset.baseUrl}?metodo=${metodo}`;
             qrText.textContent = `Escanea este código para simular el pago con ${metodo}.`;
-        } else {
-            qrBox.style.display = 'none';
+        }
+
+        if (metodo === 'TRANSFERENCIA') {
+            transferInfo.style.display = 'block';
+            operationFields.style.display = 'block';
+            bankField.style.display = 'block';
+            operationTitle.textContent = 'Datos de transferencia';
+        }
+
+        if (metodo === 'TARJETA') {
+            cardFields.style.display = 'block';
+        }
+
+        if (metodo === 'CONTRA_ENTREGA') {
+            cashFields.style.display = 'block';
         }
     }
 
-    metodoPago.addEventListener('change', actualizarQR);
-    actualizarQR();
+    metodoPago.addEventListener('change', actualizarFormularioPago);
+    actualizarFormularioPago();
 </script>
 
 {% endblock %}

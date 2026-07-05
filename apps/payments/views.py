@@ -3,23 +3,22 @@ Archivo: views.py
 Aplicación: payments
 Proyecto: Sistema Web Tiendas Mass
 Autor: Daniel Medina
-Descripción: Define las vistas para pagos simulados, registro de ventas y comprobantes.
+Descripción: Define las vistas para pagos simulados, registro de ventas, comprobantes y QR.
 """
 
+from io import BytesIO
+
+import qrcode
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.orders.models import Pedido
 
 from .forms import PagoSimuladoForm
 from .models import Comprobante, Pago, Venta
-
-from io import BytesIO
-
-import qrcode
-from django.http import HttpResponse
 
 
 @login_required
@@ -44,7 +43,20 @@ def process_payment(request, pedido_id):
         if form.is_valid():
             metodo_pago = form.cleaned_data['metodo_pago']
             tipo_comprobante = form.cleaned_data['tipo_comprobante']
+
             numero_operacion = form.cleaned_data.get('numero_operacion') or ''
+            banco = form.cleaned_data.get('banco') or ''
+            observacion = form.cleaned_data.get('observacion') or ''
+
+            tarjeta_numero = form.cleaned_data.get('tarjeta_numero') or ''
+            tarjeta_titular = form.cleaned_data.get('tarjeta_titular') or ''
+
+            tarjeta_marca = ''
+            tarjeta_ultimos4 = ''
+
+            if metodo_pago == Pago.METODO_TARJETA:
+                tarjeta_marca = form.obtener_marca_tarjeta()
+                tarjeta_ultimos4 = tarjeta_numero[-4:]
 
             with transaction.atomic():
                 pago = Pago.objects.create(
@@ -52,11 +64,13 @@ def process_payment(request, pedido_id):
                     metodo_pago=metodo_pago,
                     monto=pedido.total,
                     estado=Pago.ESTADO_APROBADO,
+                    numero_operacion=numero_operacion,
+                    banco=banco,
+                    tarjeta_titular=tarjeta_titular if metodo_pago == Pago.METODO_TARJETA else '',
+                    tarjeta_ultimos4=tarjeta_ultimos4,
+                    tarjeta_marca=tarjeta_marca,
+                    observacion=observacion,
                 )
-
-                if numero_operacion:
-                    pago.referencia = numero_operacion
-                    pago.save()
 
                 venta = Venta.objects.create(
                     pedido=pedido,
@@ -79,7 +93,10 @@ def process_payment(request, pedido_id):
                 pedido.estado = Pedido.ESTADO_PAGADO
                 pedido.save()
 
-            messages.success(request, 'Pago procesado correctamente. Se generó la venta y el comprobante.')
+            messages.success(
+                request,
+                'Pago procesado correctamente. Se generó la venta y el comprobante.'
+            )
             return redirect('payments:payment_success', pedido_id=pedido.id)
 
     else:
@@ -94,6 +111,49 @@ def process_payment(request, pedido_id):
     }
 
     return render(request, 'payments/payment_process.html', context)
+
+
+@login_required
+def payment_qr(request, pedido_id):
+    """
+    Genera un código QR simulado para pagos con Yape o Plin.
+    """
+
+    pedido = get_object_or_404(
+        Pedido,
+        id=pedido_id,
+        cliente__user=request.user
+    )
+
+    metodo = request.GET.get('metodo', Pago.METODO_YAPE).upper()
+
+    if metodo not in [Pago.METODO_YAPE, Pago.METODO_PLIN]:
+        metodo = Pago.METODO_YAPE
+
+    contenido_qr = (
+        f"TIENDAS MASS\n"
+        f"Metodo: {metodo}\n"
+        f"Pedido: {pedido.numero_pedido}\n"
+        f"Monto: S/ {pedido.total}\n"
+        f"Celular comercio: 999888777\n"
+        f"Concepto: Compra online Tiendas Mass"
+    )
+
+    qr = qrcode.QRCode(
+        version=1,
+        box_size=10,
+        border=4
+    )
+    qr.add_data(contenido_qr)
+    qr.make(fit=True)
+
+    imagen = qr.make_image(fill_color="black", back_color="white")
+
+    buffer = BytesIO()
+    imagen.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    return HttpResponse(buffer.getvalue(), content_type="image/png")
 
 
 @login_required
@@ -143,45 +203,3 @@ def receipt_detail(request, venta_id):
     }
 
     return render(request, 'payments/receipt_detail.html', context)
-
-@login_required
-def payment_qr(request, pedido_id):
-    """
-    Genera un código QR simulado para pagos con Yape o Plin.
-    """
-
-    pedido = get_object_or_404(
-        Pedido,
-        id=pedido_id,
-        cliente__user=request.user
-    )
-
-    metodo = request.GET.get('metodo', Pago.METODO_YAPE).upper()
-
-    if metodo not in [Pago.METODO_YAPE, Pago.METODO_PLIN]:
-        metodo = Pago.METODO_YAPE
-
-    contenido_qr = (
-        f"TIENDAS MASS\n"
-        f"Metodo: {metodo}\n"
-        f"Pedido: {pedido.numero_pedido}\n"
-        f"Monto: S/ {pedido.total}\n"
-        f"Celular comercio: 999888777\n"
-        f"Concepto: Compra online Tiendas Mass"
-    )
-
-    qr = qrcode.QRCode(
-        version=1,
-        box_size=10,
-        border=4
-    )
-    qr.add_data(contenido_qr)
-    qr.make(fit=True)
-
-    imagen = qr.make_image(fill_color="black", back_color="white")
-
-    buffer = BytesIO()
-    imagen.save(buffer, format="PNG")
-    buffer.seek(0)
-
-    return HttpResponse(buffer.getvalue(), content_type="image/png")

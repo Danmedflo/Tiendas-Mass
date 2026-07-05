@@ -23,7 +23,20 @@ Descripción: Vista de confirmación de pago, venta y comprobante generado.
             <p><strong>Pedido:</strong> {{ pedido.numero_pedido }}</p>
             <p><strong>Estado del pedido:</strong> {{ pedido.get_estado_display }}</p>
             <p><strong>Método de pago:</strong> {{ pago.get_metodo_pago_display }}</p>
-            <p><strong>Referencia:</strong> {{ pago.referencia }}</p>
+            <p><strong>Referencia interna:</strong> {{ pago.referencia }}</p>
+
+            {% if pago.numero_operacion %}
+                <p><strong>Número de operación:</strong> {{ pago.numero_operacion }}</p>
+            {% endif %}
+
+            {% if pago.banco %}
+                <p><strong>Banco:</strong> {{ pago.banco }}</p>
+            {% endif %}
+
+            {% if pago.tarjeta_marca %}
+                <p><strong>Tarjeta:</strong> {{ pago.tarjeta_marca }} terminada en {{ pago.tarjeta_ultimos4 }}</p>
+            {% endif %}
+
             <p><strong>Monto pagado:</strong> S/ {{ pago.monto }}</p>
         </div>
 

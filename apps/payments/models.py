@@ -47,7 +47,21 @@ class Pago(models.Model):
     metodo_pago = models.CharField(max_length=30, choices=METODOS)
     monto = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=20, choices=ESTADOS, default=ESTADO_PENDIENTE)
+
+    # Referencia interna generada por el sistema.
     referencia = models.CharField(max_length=50, unique=True, blank=True)
+
+    # Datos adicionales según método de pago.
+    numero_operacion = models.CharField(max_length=50, blank=True, null=True)
+    banco = models.CharField(max_length=50, blank=True, null=True)
+
+    # Datos simulados de tarjeta.
+    # Por seguridad académica, no se almacena el número completo ni el CVV.
+    tarjeta_titular = models.CharField(max_length=100, blank=True, null=True)
+    tarjeta_ultimos4 = models.CharField(max_length=4, blank=True, null=True)
+    tarjeta_marca = models.CharField(max_length=20, blank=True, null=True)
+
+    observacion = models.TextField(blank=True, null=True)
     fecha_pago = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -60,7 +74,7 @@ class Pago(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Genera referencia única para identificar la transacción.
+        Genera referencia única interna para identificar la transacción.
         """
         if not self.referencia:
             self.referencia = f'PAY-{uuid4().hex[:10].upper()}'

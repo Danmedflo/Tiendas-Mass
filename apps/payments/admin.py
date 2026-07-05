@@ -12,9 +12,26 @@ from .models import Pago, Venta, Comprobante
 
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
-    list_display = ('pedido', 'metodo_pago', 'monto', 'estado', 'referencia', 'fecha_pago')
-    list_filter = ('metodo_pago', 'estado')
-    search_fields = ('pedido__numero_pedido', 'referencia')
+    list_display = (
+        'pedido',
+        'metodo_pago',
+        'monto',
+        'estado',
+        'referencia',
+        'numero_operacion',
+        'banco',
+        'tarjeta_marca',
+        'tarjeta_ultimos4',
+        'fecha_pago',
+    )
+    list_filter = ('metodo_pago', 'estado', 'banco', 'tarjeta_marca')
+    search_fields = (
+        'pedido__numero_pedido',
+        'referencia',
+        'numero_operacion',
+        'tarjeta_titular',
+        'tarjeta_ultimos4',
+    )
 
 
 @admin.register(Venta)
