@@ -1,0 +1,154 @@
+<!--
+Archivo: payment_process.html
+Aplicación: payments
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista para procesar pagos simulados del pedido.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Pago | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Procesar pago</h1>
+    <p>Selecciona el método de pago para confirmar tu compra.</p>
+</section>
+
+<section class="payment-container">
+
+    <div class="payment-summary">
+        <h2>Resumen del pedido</h2>
+
+        <div class="order-info">
+            <p><strong>Número de pedido:</strong> {{ pedido.numero_pedido }}</p>
+            <p><strong>Cliente:</strong> {{ pedido.cliente.nombres }} {{ pedido.cliente.apellidos }}</p>
+            <p><strong>Dirección:</strong> {{ pedido.direccion_entrega }}</p>
+            <p><strong>Distrito:</strong> {{ pedido.distrito }}</p>
+        </div>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <strong>S/ {{ pedido.subtotal }}</strong>
+        </div>
+
+        <div class="summary-row">
+            <span>IGV 18%</span>
+            <strong>S/ {{ pedido.igv }}</strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Envío</span>
+            <strong>S/ {{ pedido.costo_envio }}</strong>
+        </div>
+
+        <div class="summary-row total">
+            <span>Total a pagar</span>
+            <strong>S/ {{ pedido.total }}</strong>
+        </div>
+    </div>
+
+    <div class="payment-form-card">
+        <h2>Datos del pago</h2>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Método de pago</label>
+                {{ form.metodo_pago }}
+                {{ form.metodo_pago.errors }}
+            </div>
+
+            <div class="payment-methods-info">
+                <div class="payment-option">
+                    <strong>Yape / Plin:</strong>
+                    <p>Al seleccionar Yape o Plin, el sistema genera un código QR simulado para el pago.</p>
+                </div>
+
+                <div class="payment-option">
+                    <strong>Tarjeta:</strong>
+                <p>Simula aprobación de Visa o Mastercard.</p>
+            </div>
+
+            <div class="payment-option">
+                <strong>Transferencia:</strong>
+                <p>Registra una referencia bancaria simulada.</p>
+            </div>
+
+            <div class="payment-option">
+                <strong>Contra entrega:</strong>
+                <p>El pago se confirma en la entrega, pero se registra el pedido.</p>
+            </div>
+        </div>
+    </div>
+
+<div id="qrPaymentBox" class="qr-payment-box">
+    <h3>QR de pago</h3>
+    <p id="qrPaymentText">
+        Escanea este código para simular el pago con Yape.
+    </p>
+
+    <img
+        id="qrPaymentImage"
+        src="{% url 'payments:payment_qr' pedido.id %}?metodo=YAPE"
+        data-base-url="{% url 'payments:payment_qr' pedido.id %}"
+        alt="Código QR de pago"
+    >
+
+    <p class="qr-amount">
+        Monto: <strong>S/ {{ pedido.total }}</strong>
+    </p>
+</div>
+
+            <div class="form-group">
+                <label>Tipo de comprobante</label>
+                {{ form.tipo_comprobante }}
+                {{ form.tipo_comprobante.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>Número de operación / referencia</label>
+                {{ form.numero_operacion }}
+                {{ form.numero_operacion.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>Observación</label>
+                {{ form.observacion }}
+                {{ form.observacion.errors }}
+            </div>
+
+            <button type="submit" class="btn-primary auth-button">
+                Confirmar pago simulado
+            </button>
+        </form>
+    </div>
+
+</section>
+
+<script>
+    const metodoPago = document.getElementById('id_metodo_pago');
+    const qrBox = document.getElementById('qrPaymentBox');
+    const qrImage = document.getElementById('qrPaymentImage');
+    const qrText = document.getElementById('qrPaymentText');
+
+    function actualizarQR() {
+        const metodo = metodoPago.value;
+
+        if (metodo === 'YAPE' || metodo === 'PLIN') {
+            qrBox.style.display = 'block';
+            qrImage.src = `${qrImage.dataset.baseUrl}?metodo=${metodo}`;
+            qrText.textContent = `Escanea este código para simular el pago con ${metodo}.`;
+        } else {
+            qrBox.style.display = 'none';
+        }
+    }
+
+    metodoPago.addEventListener('change', actualizarQR);
+    actualizarQR();
+</script>
+
+{% endblock %}

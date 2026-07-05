@@ -1,0 +1,59 @@
+<!--
+Archivo: payment_success.html
+Aplicación: payments
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista de confirmación de pago, venta y comprobante generado.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Pago exitoso | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="success-container">
+
+    <div class="success-card">
+        <h1>✅ Pago aprobado</h1>
+
+        <p>La transacción fue procesada correctamente.</p>
+
+        <div class="order-info">
+            <p><strong>Pedido:</strong> {{ pedido.numero_pedido }}</p>
+            <p><strong>Estado del pedido:</strong> {{ pedido.get_estado_display }}</p>
+            <p><strong>Método de pago:</strong> {{ pago.get_metodo_pago_display }}</p>
+            <p><strong>Referencia:</strong> {{ pago.referencia }}</p>
+            <p><strong>Monto pagado:</strong> S/ {{ pago.monto }}</p>
+        </div>
+
+        <h2>Venta registrada</h2>
+
+        <div class="order-info">
+            <p><strong>Número de comprobante:</strong> {{ venta.numero_comprobante }}</p>
+            <p><strong>Tipo:</strong> {{ venta.get_tipo_comprobante_display }}</p>
+            <p><strong>Subtotal:</strong> S/ {{ venta.subtotal }}</p>
+            <p><strong>IGV:</strong> S/ {{ venta.igv }}</p>
+            <p><strong>Total:</strong> S/ {{ venta.total }}</p>
+        </div>
+
+        <h2>Comprobante digital</h2>
+
+        <div class="order-info">
+            <p><strong>Serie:</strong> {{ comprobante.serie }}</p>
+            <p><strong>Número:</strong> {{ comprobante.numero }}</p>
+            <p><strong>Email enviado:</strong> {% if comprobante.email_enviado %}Sí{% else %}No{% endif %}</p>
+        </div>
+
+        <a href="{% url 'payments:receipt_detail' venta.id %}" class="btn-primary btn-full">
+            Ver comprobante
+        </a>
+
+        <a href="{% url 'catalog:product_list' %}" class="btn-secondary btn-full">
+            Seguir comprando
+        </a>
+    </div>
+
+</section>
+
+{% endblock %}

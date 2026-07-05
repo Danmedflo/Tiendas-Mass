@@ -170,8 +170,8 @@ def checkout(request):
 
             limpiar_carrito(request)
 
-            messages.success(request, 'Pedido registrado correctamente.')
-            return redirect('orders:order_success', pedido_id=pedido.id)
+            messages.success(request, 'Pedido registrado correctamente. Ahora realiza el pago.')
+            return redirect('payments:process_payment', pedido_id=pedido.id)
 
     else:
         form = CheckoutForm(initial={

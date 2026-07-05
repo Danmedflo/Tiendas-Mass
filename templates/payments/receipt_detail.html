@@ -1,0 +1,87 @@
+<!--
+Archivo: receipt_detail.html
+Aplicación: payments
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista del comprobante digital simulado generado por una venta.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Comprobante | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="receipt-container">
+
+    <div class="receipt-card">
+
+        <div class="receipt-header">
+            <h1>Tienda Mass</h1>
+            <p>Sistema web de ventas online</p>
+            <p>Comprobante digital simulado</p>
+        </div>
+
+        <hr>
+
+        <div class="receipt-info">
+            <p><strong>Tipo:</strong> {{ venta.get_tipo_comprobante_display }}</p>
+            <p><strong>Serie:</strong> {{ comprobante.serie }}</p>
+            <p><strong>Número:</strong> {{ comprobante.numero }}</p>
+            <p><strong>Fecha de emisión:</strong> {{ comprobante.fecha_emision }}</p>
+        </div>
+
+        <div class="receipt-info">
+            <p><strong>Cliente:</strong> {{ pedido.cliente.nombres }} {{ pedido.cliente.apellidos }}</p>
+            <p><strong>DNI:</strong> {{ pedido.cliente.dni }}</p>
+            <p><strong>Email:</strong> {{ pedido.cliente.email }}</p>
+            <p><strong>Dirección:</strong> {{ pedido.direccion_entrega }}</p>
+        </div>
+
+        <table class="receipt-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for detalle in pedido.detalles.all %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>S/ {{ detalle.precio_unitario }}</td>
+                        <td>S/ {{ detalle.subtotal }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="receipt-totals">
+            <p><span>Subtotal:</span> <strong>S/ {{ venta.subtotal }}</strong></p>
+            <p><span>IGV 18%:</span> <strong>S/ {{ venta.igv }}</strong></p>
+            <p><span>Total:</span> <strong>S/ {{ venta.total }}</strong></p>
+        </div>
+
+        <p class="receipt-note">
+            Este comprobante es una simulación académica para el sistema Tiendas Mass.
+        </p>
+
+        <div class="detail-actions">
+            <a href="{% url 'catalog:product_list' %}" class="btn-secondary">
+                Volver a productos
+            </a>
+
+            <button onclick="window.print()" class="btn-primary">
+                Imprimir comprobante
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

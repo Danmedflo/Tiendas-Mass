@@ -58,7 +58,11 @@ Descripción: Vista de confirmación después de registrar un pedido.
             <strong>S/ {{ pedido.total|floatformat:2 }}</strong>
         </div>
 
-        <a href="{% url 'catalog:product_list' %}" class="btn-primary btn-full">
+        <a href="{% url 'payments:process_payment' pedido.id %}" class="btn-primary btn-full">
+            Proceder al pago
+        </a>
+
+        <a href="{% url 'catalog:product_list' %}" class="btn-secondary btn-full">
             Volver a productos
         </a>
     </div>

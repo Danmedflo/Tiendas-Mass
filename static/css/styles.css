@@ -744,3 +744,210 @@ body {
         min-width: 700px;
     }
 }
+
+/* Estilos de pagos y comprobantes */
+
+.payment-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto 70px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.payment-summary,
+.payment-form-card,
+.receipt-card {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.payment-summary h2,
+.payment-form-card h2 {
+    color: #1f4f9a;
+    margin-bottom: 20px;
+}
+
+.payment-methods-info {
+    background-color: #f3f4f6;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.payment-option {
+    margin-bottom: 12px;
+}
+
+.payment-option:last-child {
+    margin-bottom: 0;
+}
+
+.payment-option strong {
+    color: #1f4f9a;
+}
+
+.payment-option p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.auth-form select,
+.auth-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-top: 6px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.auth-form select:focus,
+.auth-form textarea:focus {
+    border-color: #1f4f9a;
+    outline: none;
+}
+
+.receipt-container {
+    width: 90%;
+    max-width: 850px;
+    margin: 50px auto 80px;
+}
+
+.receipt-header {
+    text-align: center;
+}
+
+.receipt-header h1 {
+    color: #1f4f9a;
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.receipt-header p {
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.receipt-info {
+    margin: 20px 0;
+    background-color: #f3f4f6;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.receipt-info p {
+    margin-bottom: 7px;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.receipt-table th {
+    background-color: #1f4f9a;
+    color: #ffffff;
+    padding: 12px;
+    text-align: left;
+}
+
+.receipt-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-totals {
+    margin-top: 20px;
+    margin-left: auto;
+    max-width: 300px;
+}
+
+.receipt-totals p {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.receipt-totals p:last-child {
+    font-size: 20px;
+    color: #1f4f9a;
+    border-top: 2px solid #1f4f9a;
+    margin-top: 8px;
+}
+
+.receipt-note {
+    margin-top: 25px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+@media print {
+    .main-header,
+    .footer,
+    .detail-actions,
+    .messages-container {
+        display: none;
+    }
+
+    body {
+        background-color: white;
+    }
+
+    .receipt-card {
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .payment-container {
+        grid-template-columns: 1fr;
+    }
+
+    .receipt-table {
+        font-size: 14px;
+    }
+}
+
+/* QR de pagos Yape y Plin */
+
+.qr-payment-box {
+    margin: 20px 0;
+    padding: 18px;
+    border-radius: 12px;
+    background-color: #f9fafb;
+    border: 2px dashed #1f4f9a;
+    text-align: center;
+}
+
+.qr-payment-box h3 {
+    color: #1f4f9a;
+    margin-bottom: 8px;
+}
+
+.qr-payment-box p {
+    color: #4b5563;
+    margin-bottom: 12px;
+}
+
+.qr-payment-box img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.qr-amount {
+    margin-top: 12px;
+    font-size: 18px;
+    color: #1f2937;
+}
