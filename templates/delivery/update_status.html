@@ -1,0 +1,55 @@
+<!--
+Archivo: update_status.html
+Aplicación: delivery
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista para actualizar el estado de una entrega.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Actualizar entrega | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Actualizar entrega</h1>
+    <p>Modifica el estado del pedido asignado.</p>
+</section>
+
+<section class="auth-container">
+
+    <div class="auth-card">
+        <h2>{{ entrega.pedido.numero_pedido }}</h2>
+
+        <div class="order-info">
+            <p><strong>Cliente:</strong> {{ entrega.pedido.cliente.nombres }} {{ entrega.pedido.cliente.apellidos }}</p>
+            <p><strong>Dirección:</strong> {{ entrega.pedido.direccion_entrega }}</p>
+            <p><strong>Distrito:</strong> {{ entrega.pedido.distrito }}</p>
+            <p><strong>Estado actual:</strong> {{ entrega.get_estado_display }}</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Nuevo estado</label>
+                {{ form.estado }}
+                {{ form.estado.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>Observación</label>
+                {{ form.observacion }}
+                {{ form.observacion.errors }}
+            </div>
+
+            <button type="submit" class="btn-primary auth-button">
+                Guardar estado
+            </button>
+        </form>
+    </div>
+
+</section>
+
+{% endblock %}

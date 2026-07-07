@@ -62,6 +62,10 @@ Descripción: Vista de confirmación de pago, venta y comprobante generado.
             Ver comprobante
         </a>
 
+        <a href="{% url 'delivery:tracking' pedido.id %}" class="btn-secondary btn-full">
+            Ver seguimiento de entrega
+        </a>
+
         <a href="{% url 'catalog:product_list' %}" class="btn-secondary btn-full">
             Seguir comprando
         </a>

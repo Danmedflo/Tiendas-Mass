@@ -31,6 +31,7 @@ Descripción: Plantilla base reutilizable para todas las páginas del sistema.
 
             {% if user.is_authenticated %}
                 <li><a href="#">Hola, {{ user.first_name|default:user.username }}</a></li>
+                <li><a href="{% url 'delivery:assigned_list' %}">Mis entregas</a></li>
                 <li><a href="{% url 'accounts:logout' %}">Salir</a></li>
             {% else %}
                 <li><a href="{% url 'accounts:login' %}">Login</a></li>

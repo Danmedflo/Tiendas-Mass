@@ -16,6 +16,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.orders.models import Pedido
+from apps.delivery.services import asignar_entrega_automatica
 
 from .forms import PagoSimuladoForm
 from .models import Comprobante, Pago, Venta
@@ -92,6 +93,8 @@ def process_payment(request, pedido_id):
 
                 pedido.estado = Pedido.ESTADO_PAGADO
                 pedido.save()
+                
+                asignar_entrega_automatica(pedido)
 
             messages.success(
                 request,

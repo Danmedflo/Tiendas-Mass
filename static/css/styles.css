@@ -986,3 +986,85 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Estilos de entregas y seguimiento */
+
+.tracking-container,
+.delivery-list-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto 70px;
+}
+
+.tracking-card,
+.delivery-card {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.tracking-card h2,
+.delivery-card h3 {
+    color: #1f4f9a;
+    margin-bottom: 15px;
+}
+
+.tracking-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.step {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.step.active {
+    background-color: #1f4f9a;
+    color: #ffffff;
+}
+
+.delivery-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+}
+
+.delivery-card p {
+    margin-bottom: 7px;
+}
+
+.delivery-actions {
+    min-width: 180px;
+    text-align: right;
+}
+
+@media (max-width: 700px) {
+    .tracking-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .delivery-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .delivery-actions {
+        width: 100%;
+        text-align: left;
+    }
+
+    .delivery-actions .btn-primary {
+        display: block;
+        text-align: center;
+    }
+}

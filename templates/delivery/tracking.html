@@ -1,0 +1,74 @@
+<!--
+Archivo: tracking.html
+Aplicación: delivery
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista de seguimiento de entrega para el cliente.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Seguimiento | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Seguimiento de pedido</h1>
+    <p>Consulta el estado de entrega de tu compra.</p>
+</section>
+
+<section class="tracking-container">
+
+    <div class="tracking-card">
+        <h2>Pedido {{ pedido.numero_pedido }}</h2>
+
+        <div class="order-info">
+            <p><strong>Estado del pedido:</strong> {{ pedido.get_estado_display }}</p>
+            <p><strong>Dirección:</strong> {{ pedido.direccion_entrega }}</p>
+            <p><strong>Distrito:</strong> {{ pedido.distrito }}</p>
+            <p><strong>Total:</strong> S/ {{ pedido.total }}</p>
+        </div>
+
+        {% if entrega %}
+            <h3>Datos de entrega</h3>
+
+            <div class="order-info">
+                <p><strong>Estado de entrega:</strong> {{ entrega.get_estado_display }}</p>
+                <p><strong>Repartidor:</strong> {{ entrega.repartidor.empleado.nombres }} {{ entrega.repartidor.empleado.apellidos }}</p>
+                <p><strong>Zona:</strong> {{ entrega.repartidor.zona }}</p>
+                <p><strong>Vehículo:</strong> {{ entrega.repartidor.vehiculo|default:"No especificado" }}</p>
+                <p><strong>Fecha de asignación:</strong> {{ entrega.fecha_asignacion }}</p>
+
+                {% if entrega.fecha_entrega %}
+                    <p><strong>Fecha de entrega:</strong> {{ entrega.fecha_entrega }}</p>
+                {% endif %}
+
+                {% if entrega.observacion %}
+                    <p><strong>Observación:</strong> {{ entrega.observacion }}</p>
+                {% endif %}
+            </div>
+
+            <div class="tracking-steps">
+                <div class="step active">Asignada</div>
+                <div class="step {% if entrega.estado == 'EN_CAMINO' or entrega.estado == 'ENTREGADA' %}active{% endif %}">
+                    En camino
+                </div>
+                <div class="step {% if entrega.estado == 'ENTREGADA' %}active{% endif %}">
+                    Entregada
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>Entrega pendiente de asignación</h3>
+                <p>Tu pedido ya fue procesado, pero aún no se asignó un repartidor disponible.</p>
+            </div>
+        {% endif %}
+
+        <a href="{% url 'catalog:product_list' %}" class="btn-secondary btn-full">
+            Volver a productos
+        </a>
+    </div>
+
+</section>
+
+{% endblock %}
