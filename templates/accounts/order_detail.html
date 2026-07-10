@@ -1,0 +1,153 @@
+<!--
+Archivo: order_detail.html
+Aplicación: accounts
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista de detalle de un pedido del cliente.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Detalle del pedido | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Detalle del pedido</h1>
+    <p>Revisa los productos, pago, comprobante y entrega de tu compra.</p>
+</section>
+
+<section class="order-detail-container">
+
+    <div class="order-detail-grid">
+
+        <article class="profile-card">
+            <h2>Información del pedido</h2>
+
+            <div class="order-info">
+                <p><strong>Número:</strong> {{ pedido.numero_pedido }}</p>
+                <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                <p><strong>Dirección:</strong> {{ pedido.direccion_entrega }}</p>
+                <p><strong>Distrito:</strong> {{ pedido.distrito }}</p>
+                <p><strong>Fecha:</strong> {{ pedido.fecha_pedido }}</p>
+            </div>
+        </article>
+
+        <article class="profile-card">
+            <h2>Resumen económico</h2>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <strong>S/ {{ pedido.subtotal }}</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>IGV 18%</span>
+                <strong>S/ {{ pedido.igv }}</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Envío</span>
+                <strong>S/ {{ pedido.costo_envio }}</strong>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total</span>
+                <strong>S/ {{ pedido.total }}</strong>
+            </div>
+        </article>
+
+    </div>
+
+    <article class="profile-card">
+        <h2>Productos comprados</h2>
+
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Código</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for detalle in pedido.detalles.all %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.producto.codigo }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>S/ {{ detalle.precio_unitario }}</td>
+                        <td>S/ {{ detalle.subtotal }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+
+    <div class="order-detail-grid">
+
+        <article class="profile-card">
+            <h2>Pago y comprobante</h2>
+
+            {% if venta and comprobante %}
+                <div class="order-info">
+                    <p><strong>Comprobante:</strong> {{ venta.numero_comprobante }}</p>
+                    <p><strong>Tipo:</strong> {{ venta.get_tipo_comprobante_display }}</p>
+                    <p><strong>Método de pago:</strong> {{ venta.metodo_pago }}</p>
+                    <p><strong>Total pagado:</strong> S/ {{ venta.total }}</p>
+                </div>
+
+                <a href="{% url 'payments:receipt_detail' venta.id %}" class="btn-primary btn-full">
+                    Ver comprobante
+                </a>
+            {% else %}
+                <div class="empty-state">
+                    <h3>Pago pendiente</h3>
+                    <p>Este pedido todavía no tiene un comprobante generado.</p>
+                </div>
+
+                <a href="{% url 'payments:process_payment' pedido.id %}" class="btn-primary btn-full">
+                    Proceder al pago
+                </a>
+            {% endif %}
+        </article>
+
+        <article class="profile-card">
+            <h2>Entrega</h2>
+
+            {% if entrega %}
+                <div class="order-info">
+                    <p><strong>Estado de entrega:</strong> {{ entrega.get_estado_display }}</p>
+                    <p><strong>Repartidor:</strong> {{ entrega.repartidor.empleado.nombres }} {{ entrega.repartidor.empleado.apellidos }}</p>
+                    <p><strong>Zona:</strong> {{ entrega.repartidor.zona }}</p>
+                    <p><strong>Vehículo:</strong> {{ entrega.repartidor.vehiculo|default:"No especificado" }}</p>
+                    <p><strong>Fecha de asignación:</strong> {{ entrega.fecha_asignacion }}</p>
+
+                    {% if entrega.fecha_entrega %}
+                        <p><strong>Fecha de entrega:</strong> {{ entrega.fecha_entrega }}</p>
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'delivery:tracking' pedido.id %}" class="btn-secondary btn-full">
+                    Ver seguimiento
+                </a>
+            {% else %}
+                <div class="empty-state">
+                    <h3>Entrega pendiente</h3>
+                    <p>Aún no se asignó un repartidor para este pedido.</p>
+                </div>
+            {% endif %}
+        </article>
+
+    </div>
+
+    <a href="{% url 'accounts:my_orders' %}" class="btn-secondary">
+        Volver a mis pedidos
+    </a>
+
+</section>
+
+{% endblock %}

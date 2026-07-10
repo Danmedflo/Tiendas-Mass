@@ -1394,3 +1394,93 @@ table tr:last-child td {
         width: 100%;
     }
 }
+
+/* ================================
+   PERFIL Y MIS PEDIDOS
+================================ */
+
+.profile-container,
+.order-detail-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto 75px;
+    animation: fadeInUp 0.35s ease;
+}
+
+.profile-grid,
+.order-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.profile-card {
+    background-color: var(--mass-card);
+    padding: 26px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(31, 79, 154, 0.08);
+}
+
+.profile-card h2 {
+    color: var(--mass-blue);
+    font-weight: 900;
+    margin-bottom: 18px;
+}
+
+.profile-info {
+    background-color: #f3f6fb;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid var(--mass-border);
+}
+
+.profile-info p {
+    margin-bottom: 9px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+}
+
+.profile-stats div {
+    background: linear-gradient(145deg, #ffffff, #f7faff);
+    border: 1px solid rgba(31, 79, 154, 0.08);
+    box-shadow: var(--shadow-sm);
+    border-radius: 14px;
+    padding: 18px 12px;
+    text-align: center;
+}
+
+.profile-stats span {
+    display: block;
+    color: var(--mass-blue);
+    font-size: 30px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.profile-stats p {
+    color: var(--mass-muted);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.order-detail-container > .btn-secondary {
+    margin-top: 20px;
+}
+
+@media (max-width: 900px) {
+    .profile-grid,
+    .order-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,66 @@
+<!--
+Archivo: my_orders.html
+Aplicación: accounts
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista del historial de pedidos del cliente.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Mis pedidos | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Mis pedidos</h1>
+    <p>Consulta el historial de tus compras y el estado de cada pedido.</p>
+</section>
+
+<section class="report-container">
+
+    {% if pedidos %}
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Estado</th>
+                    <th>Subtotal</th>
+                    <th>IGV</th>
+                    <th>Envío</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for pedido in pedidos %}
+                    <tr>
+                        <td>{{ pedido.numero_pedido }}</td>
+                        <td>{{ pedido.get_estado_display }}</td>
+                        <td>S/ {{ pedido.subtotal }}</td>
+                        <td>S/ {{ pedido.igv }}</td>
+                        <td>S/ {{ pedido.costo_envio }}</td>
+                        <td><strong>S/ {{ pedido.total }}</strong></td>
+                        <td>{{ pedido.fecha_pedido }}</td>
+                        <td>
+                            <a href="{% url 'accounts:order_detail' pedido.id %}" class="btn-small">
+                                Ver detalle
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <h3>No tienes pedidos registrados</h3>
+            <p>Agrega productos al carrito para realizar tu primera compra.</p>
+            <a href="{% url 'catalog:product_list' %}" class="btn-primary">Ver productos</a>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,89 @@
+<!--
+Archivo: edit_profile.html
+Aplicación: accounts
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista para editar datos del perfil del cliente.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Editar perfil | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Editar perfil</h1>
+    <p>Actualiza tus datos personales y dirección de entrega.</p>
+</section>
+
+<section class="auth-container">
+
+    <div class="auth-card register-card">
+        <h1>Actualizar datos</h1>
+
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombres</label>
+                    {{ form.nombres }}
+                    {{ form.nombres.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    {{ form.apellidos }}
+                    {{ form.apellidos.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Email</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    {{ form.telefono }}
+                    {{ form.telefono.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>DNI</label>
+                    <input type="text" value="{{ cliente.dni }}" disabled>
+                </div>
+
+                <div class="form-group full">
+                    <label>Dirección</label>
+                    {{ form.direccion }}
+                    {{ form.direccion.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Distrito</label>
+                    {{ form.distrito }}
+                    {{ form.distrito.errors }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary auth-button">
+                Guardar cambios
+            </button>
+
+            <a href="{% url 'accounts:profile' %}" class="btn-secondary btn-full">
+                Cancelar
+            </a>
+        </form>
+    </div>
+
+</section>
+
+{% endblock %}

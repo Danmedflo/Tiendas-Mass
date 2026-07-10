@@ -3,7 +3,7 @@ Archivo: forms.py
 Aplicación: accounts
 Proyecto: Sistema Web Tiendas Mass
 Autor: Daniel Medina
-Descripción: Define los formularios para registro e inicio de sesión de clientes.
+Descripción: Define los formularios para registro, inicio de sesión y edición de perfil.
 """
 
 from django import forms
@@ -88,3 +88,42 @@ class LoginForm(forms.Form):
         label='Contraseña',
         widget=forms.PasswordInput
     )
+
+
+class EditarPerfilClienteForm(forms.Form):
+    """
+    Formulario para editar datos básicos del cliente.
+    """
+
+    telefono_validator = RegexValidator(
+        regex=r'^\d{9}$',
+        message='El teléfono debe contener exactamente 9 dígitos.'
+    )
+
+    nombres = forms.CharField(max_length=100)
+    apellidos = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    telefono = forms.CharField(max_length=9, validators=[telefono_validator])
+    direccion = forms.CharField(max_length=200)
+    distrito = forms.CharField(max_length=100)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.cliente = kwargs.pop('cliente', None)
+        super().__init__(*args, **kwargs)
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+
+        if self.user:
+            if User.objects.filter(email=email).exclude(pk=self.user.pk).exists():
+                raise forms.ValidationError('Este correo ya está registrado por otro usuario.')
+
+            if User.objects.filter(username=email).exclude(pk=self.user.pk).exists():
+                raise forms.ValidationError('Este correo ya está siendo usado como usuario.')
+
+        if self.cliente:
+            if Cliente.objects.filter(email=email).exclude(pk=self.cliente.pk).exists():
+                raise forms.ValidationError('Este correo ya está registrado por otro cliente.')
+
+        return email

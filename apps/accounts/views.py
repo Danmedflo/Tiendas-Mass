@@ -3,17 +3,32 @@ Archivo: views.py
 Aplicación: accounts
 Proyecto: Sistema Web Tiendas Mass
 Autor: Daniel Medina
-Descripción: Define las vistas para registro, inicio y cierre de sesión.
+Descripción: Define las vistas para registro, login, logout, perfil y pedidos del cliente.
 """
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import LoginForm, RegistroClienteForm
+from apps.delivery.models import Entrega
+from apps.orders.models import Pedido
+from apps.payments.models import Comprobante, Venta
+
+from .forms import EditarPerfilClienteForm, LoginForm, RegistroClienteForm
 from .models import Cliente, PerfilUsuario
+
+
+def obtener_cliente_actual(user):
+    """
+    Obtiene el cliente asociado al usuario autenticado.
+    """
+    try:
+        return user.cliente
+    except Cliente.DoesNotExist:
+        return None
 
 
 def register_client(request):
@@ -93,7 +108,7 @@ def login_view(request):
                         password=password
                     )
                 except User.DoesNotExist:
-                    user = None 
+                    user = None
 
             if user is not None:
                 login(request, user)
@@ -116,3 +131,180 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Sesión cerrada correctamente.')
     return redirect('core:home')
+
+
+@login_required
+def profile(request):
+    """
+    Muestra el perfil del cliente autenticado.
+    """
+
+    cliente = obtener_cliente_actual(request.user)
+
+    if not cliente:
+        messages.error(request, 'Tu usuario no tiene un perfil de cliente asociado.')
+        return redirect('core:home')
+
+    pedidos_recientes = Pedido.objects.filter(
+        cliente=cliente
+    ).order_by('-fecha_pedido')[:5]
+
+    total_pedidos = Pedido.objects.filter(cliente=cliente).count()
+
+    pedidos_entregados = Pedido.objects.filter(
+        cliente=cliente,
+        estado=Pedido.ESTADO_ENTREGADO
+    ).count()
+
+    pedidos_pendientes = Pedido.objects.filter(
+        cliente=cliente
+    ).exclude(
+        estado__in=[Pedido.ESTADO_ENTREGADO, Pedido.ESTADO_CANCELADO]
+    ).count()
+
+    context = {
+        'cliente': cliente,
+        'pedidos_recientes': pedidos_recientes,
+        'total_pedidos': total_pedidos,
+        'pedidos_entregados': pedidos_entregados,
+        'pedidos_pendientes': pedidos_pendientes,
+    }
+
+    return render(request, 'accounts/profile.html', context)
+
+
+@login_required
+def edit_profile(request):
+    """
+    Permite editar los datos básicos del perfil del cliente.
+    """
+
+    cliente = obtener_cliente_actual(request.user)
+
+    if not cliente:
+        messages.error(request, 'Tu usuario no tiene un perfil de cliente asociado.')
+        return redirect('core:home')
+
+    if request.method == 'POST':
+        form = EditarPerfilClienteForm(
+            request.POST,
+            user=request.user,
+            cliente=cliente
+        )
+
+        if form.is_valid():
+            data = form.cleaned_data
+
+            with transaction.atomic():
+                request.user.first_name = data['nombres']
+                request.user.last_name = data['apellidos']
+                request.user.email = data['email']
+                request.user.username = data['email']
+                request.user.save()
+
+                cliente.nombres = data['nombres']
+                cliente.apellidos = data['apellidos']
+                cliente.email = data['email']
+                cliente.telefono = data['telefono']
+                cliente.direccion = data['direccion']
+                cliente.distrito = data['distrito']
+                cliente.save()
+
+                if hasattr(request.user, 'perfil'):
+                    request.user.perfil.telefono = data['telefono']
+                    request.user.perfil.save()
+
+            messages.success(request, 'Perfil actualizado correctamente.')
+            return redirect('accounts:profile')
+
+    else:
+        form = EditarPerfilClienteForm(
+            initial={
+                'nombres': cliente.nombres,
+                'apellidos': cliente.apellidos,
+                'email': cliente.email,
+                'telefono': cliente.telefono,
+                'direccion': cliente.direccion,
+                'distrito': cliente.distrito,
+            },
+            user=request.user,
+            cliente=cliente
+        )
+
+    return render(request, 'accounts/edit_profile.html', {
+        'form': form,
+        'cliente': cliente,
+    })
+
+
+@login_required
+def my_orders(request):
+    """
+    Muestra el historial de pedidos del cliente.
+    """
+
+    cliente = obtener_cliente_actual(request.user)
+
+    if not cliente:
+        messages.error(request, 'Tu usuario no tiene pedidos como cliente.')
+        return redirect('core:home')
+
+    pedidos = Pedido.objects.filter(
+        cliente=cliente
+    ).prefetch_related(
+        'detalles__producto'
+    ).order_by('-fecha_pedido')
+
+    return render(request, 'accounts/my_orders.html', {
+        'cliente': cliente,
+        'pedidos': pedidos,
+    })
+
+
+@login_required
+def order_detail(request, pedido_id):
+    """
+    Muestra el detalle completo de un pedido del cliente.
+    """
+
+    cliente = obtener_cliente_actual(request.user)
+
+    if not cliente:
+        messages.error(request, 'Tu usuario no tiene pedidos como cliente.')
+        return redirect('core:home')
+
+    pedido = get_object_or_404(
+        Pedido.objects.prefetch_related('detalles__producto'),
+        id=pedido_id,
+        cliente=cliente
+    )
+
+    venta = None
+    comprobante = None
+    entrega = None
+
+    try:
+        venta = pedido.venta
+    except Venta.DoesNotExist:
+        venta = None
+
+    if venta:
+        try:
+            comprobante = venta.comprobante
+        except Comprobante.DoesNotExist:
+            comprobante = None
+
+    try:
+        entrega = pedido.entrega
+    except Entrega.DoesNotExist:
+        entrega = None
+
+    context = {
+        'cliente': cliente,
+        'pedido': pedido,
+        'venta': venta,
+        'comprobante': comprobante,
+        'entrega': entrega,
+    }
+
+    return render(request, 'accounts/order_detail.html', context)
