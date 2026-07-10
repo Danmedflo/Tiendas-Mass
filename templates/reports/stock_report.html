@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de stock | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Reporte de stock</h1>
+    <p>Controla el inventario y detecta productos con stock bajo.</p>
+</section>
+
+<section class="report-container">
+
+    <div class="report-actions">
+        <a href="?guardar=1" class="btn-secondary">Guardar reporte</a>
+    </div>
+
+    <div class="report-summary">
+        <div>
+            <h3>Productos registrados</h3>
+            <p>{{ productos.count }}</p>
+        </div>
+
+        <div>
+            <h3>Productos con stock bajo</h3>
+            <p>{{ stock_bajo.count }}</p>
+        </div>
+
+        <div>
+            <h3>Valor del inventario</h3>
+            <p>S/ {{ valor_inventario }}</p>
+        </div>
+    </div>
+
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Stock mínimo</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for producto in productos %}
+                <tr class="{% if producto.stock <= producto.stock_minimo %}row-warning{% endif %}">
+                    <td>{{ producto.codigo }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.categoria.nombre }}</td>
+                    <td>S/ {{ producto.precio }}</td>
+                    <td>{{ producto.stock }}</td>
+                    <td>{{ producto.stock_minimo }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">No hay productos registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</section>
+
+{% endblock %}

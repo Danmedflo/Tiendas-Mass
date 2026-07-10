@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de clientes | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Reporte de clientes</h1>
+    <p>Consulta los clientes registrados y su actividad de compra.</p>
+</section>
+
+<section class="report-container">
+
+    <div class="report-actions">
+        <a href="?guardar=1" class="btn-secondary">Guardar reporte</a>
+    </div>
+
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Cliente</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Distrito</th>
+                <th>Pedidos</th>
+                <th>Activo</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.dni }}</td>
+                    <td>{{ cliente.nombres }} {{ cliente.apellidos }}</td>
+                    <td>{{ cliente.email }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>{{ cliente.distrito }}</td>
+                    <td>{{ cliente.cantidad_pedidos }}</td>
+                    <td>{% if cliente.activo %}Sí{% else %}No{% endif %}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">No hay clientes registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</section>
+
+{% endblock %}

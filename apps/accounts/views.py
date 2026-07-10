@@ -84,6 +84,17 @@ def login_view(request):
 
             user = authenticate(request, username=email, password=password)
 
+            if user is None:
+                try:
+                    usuario_encontrado = User.objects.get(email=email)
+                    user = authenticate(
+                        request,
+                        username=usuario_encontrado.username,
+                        password=password
+                    )
+                except User.DoesNotExist:
+                    user = None 
+
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Bienvenido, {user.first_name or user.username}.')

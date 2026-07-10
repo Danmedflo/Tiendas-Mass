@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de pedidos | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Reporte de pedidos</h1>
+    <p>Consulta el estado de los pedidos registrados en el sistema.</p>
+</section>
+
+<section class="report-container">
+
+    <div class="report-actions">
+        <a href="?guardar=1" class="btn-secondary">Guardar reporte</a>
+    </div>
+
+    <div class="dashboard-panel">
+        <h2>Resumen por estado</h2>
+
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in resumen_estados %}
+                    <tr>
+                        <td>{{ item.estado }}</td>
+                        <td>{{ item.cantidad }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">No hay pedidos registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.numero_pedido }}</td>
+                    <td>{{ pedido.cliente.nombres }} {{ pedido.cliente.apellidos }}</td>
+                    <td>{{ pedido.get_estado_display }}</td>
+                    <td>S/ {{ pedido.total }}</td>
+                    <td>{{ pedido.fecha_pedido }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No hay pedidos registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</section>
+
+{% endblock %}
