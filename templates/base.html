@@ -27,21 +27,24 @@ Descripción: Plantilla base reutilizable para todas las páginas del sistema.
         <ul class="nav-links">
             <li><a href="{% url 'core:home' %}">Inicio</a></li>
             <li><a href="{% url 'catalog:product_list' %}">Productos</a></li>
-            <li><a href="{% url 'orders:cart_detail' %}">Carrito</a></li>
 
             {% if user.is_authenticated %}
                 {% if user.is_staff or user.is_superuser %}
                     <li><a href="{% url 'reports:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'support:admin_ticket_list' %}">Soporte</a></li>
                 {% elif user.perfil.rol == 'REPARTIDOR' %}
                     <li><a href="{% url 'delivery:assigned_list' %}">Mis entregas</a></li>
                 {% else %}
+                    <li><a href="{% url 'orders:cart_detail' %}">Carrito</a></li>
                     <li><a href="{% url 'accounts:profile' %}">Mi perfil</a></li>
                     <li><a href="{% url 'accounts:my_orders' %}">Mis pedidos</a></li>
+                    <li><a href="{% url 'support:my_tickets' %}">Soporte</a></li>
                 {% endif %}
 
                 <li><a href="#">Hola, {{ user.first_name|default:user.username }}</a></li>
                 <li><a href="{% url 'accounts:logout' %}">Salir</a></li>
             {% else %}
+                <li><a href="{% url 'orders:cart_detail' %}">Carrito</a></li>
                 <li><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li><a href="{% url 'accounts:register' %}">Registro</a></li>
             {% endif %}

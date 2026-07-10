@@ -12,6 +12,22 @@ from .models import TicketSoporte
 
 @admin.register(TicketSoporte)
 class TicketSoporteAdmin(admin.ModelAdmin):
-    list_display = ('asunto', 'usuario', 'tipo_problema', 'estado', 'prioridad', 'fecha_creacion')
-    list_filter = ('estado', 'prioridad', 'tipo_problema')
-    search_fields = ('asunto', 'descripcion', 'usuario__username')
+    list_display = (
+        'asunto',
+        'usuario',
+        'tipo_problema',
+        'estado',
+        'prioridad',
+        'fecha_creacion',
+        'fecha_cierre',
+    )
+    list_filter = ('estado', 'prioridad', 'tipo_problema', 'fecha_creacion')
+    search_fields = (
+        'asunto',
+        'descripcion',
+        'respuesta',
+        'usuario__username',
+        'usuario__email',
+        'pedido__numero_pedido',
+    )
+    readonly_fields = ('fecha_creacion',)

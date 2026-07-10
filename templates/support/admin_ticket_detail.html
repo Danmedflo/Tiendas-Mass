@@ -1,0 +1,99 @@
+<!--
+Archivo: admin_ticket_detail.html
+Aplicación: support
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista para atender un ticket de soporte desde administración.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Atender ticket | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Atender ticket</h1>
+    <p>Revisa la incidencia y registra una respuesta para el cliente.</p>
+</section>
+
+<section class="support-detail-container">
+
+    <div class="order-detail-grid">
+
+        <article class="profile-card">
+            <h2>Información del ticket</h2>
+
+            <div class="support-meta">
+                <span class="ticket-badge status-{{ ticket.estado|lower }}">
+                    {{ ticket.get_estado_display }}
+                </span>
+
+                <span class="ticket-badge priority-{{ ticket.prioridad|lower }}">
+                    Prioridad {{ ticket.get_prioridad_display }}
+                </span>
+            </div>
+
+            <div class="order-info">
+                <p><strong>Asunto:</strong> {{ ticket.asunto }}</p>
+                <p><strong>Usuario:</strong> {{ ticket.usuario.email|default:ticket.usuario.username }}</p>
+                <p><strong>Tipo:</strong> {{ ticket.tipo_problema }}</p>
+
+                {% if ticket.pedido %}
+                    <p><strong>Pedido:</strong> {{ ticket.pedido.numero_pedido }}</p>
+                {% else %}
+                    <p><strong>Pedido:</strong> No aplica</p>
+                {% endif %}
+
+                <p><strong>Fecha de creación:</strong> {{ ticket.fecha_creacion }}</p>
+
+                {% if ticket.fecha_cierre %}
+                    <p><strong>Fecha de cierre:</strong> {{ ticket.fecha_cierre }}</p>
+                {% endif %}
+            </div>
+
+            <h3>Descripción del cliente</h3>
+            <div class="support-box">
+                {{ ticket.descripcion }}
+            </div>
+        </article>
+
+        <article class="profile-card">
+            <h2>Actualizar atención</h2>
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    {{ form.estado }}
+                    {{ form.estado.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Prioridad</label>
+                    {{ form.prioridad }}
+                    {{ form.prioridad.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Respuesta</label>
+                    {{ form.respuesta }}
+                    {{ form.respuesta.errors }}
+                </div>
+
+                <button type="submit" class="btn-primary auth-button">
+                    Guardar respuesta
+                </button>
+
+                <a href="{% url 'support:admin_ticket_list' %}" class="btn-secondary btn-full">
+                    Volver a soporte
+                </a>
+            </form>
+        </article>
+
+    </div>
+
+</section>
+
+{% endblock %}

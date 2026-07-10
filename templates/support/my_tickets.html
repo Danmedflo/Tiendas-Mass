@@ -1,0 +1,80 @@
+<!--
+Archivo: my_tickets.html
+Aplicación: support
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista de tickets creados por el usuario.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Mis tickets | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Mis tickets de soporte</h1>
+    <p>Consulta el estado de tus consultas o incidencias registradas.</p>
+</section>
+
+<section class="report-container">
+
+    <div class="report-actions">
+        <a href="{% url 'support:create_ticket' %}" class="btn-primary">
+            Crear nuevo ticket
+        </a>
+    </div>
+
+    {% if tickets %}
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Asunto</th>
+                    <th>Tipo</th>
+                    <th>Pedido</th>
+                    <th>Estado</th>
+                    <th>Prioridad</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.asunto }}</td>
+                        <td>{{ ticket.tipo_problema }}</td>
+                        <td>
+                            {% if ticket.pedido %}
+                                {{ ticket.pedido.numero_pedido }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="ticket-badge status-{{ ticket.estado|lower }}">
+                                {{ ticket.get_estado_display }}
+                            </span>
+                        </td>
+                        <td>{{ ticket.get_prioridad_display }}</td>
+                        <td>{{ ticket.fecha_creacion }}</td>
+                        <td>
+                            <a href="{% url 'support:ticket_detail' ticket.id %}" class="btn-small">
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <h3>No tienes tickets registrados</h3>
+            <p>Si tienes un problema con tu compra, puedes registrar un ticket de soporte.</p>
+            <a href="{% url 'support:create_ticket' %}" class="btn-primary">Crear ticket</a>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}

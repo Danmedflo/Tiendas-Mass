@@ -1,0 +1,72 @@
+<!--
+Archivo: create_ticket.html
+Aplicación: support
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista para registrar un ticket de soporte.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Nuevo ticket | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Crear ticket de soporte</h1>
+    <p>Registra una consulta o incidencia relacionada con tu compra.</p>
+</section>
+
+<section class="auth-container">
+
+    <div class="auth-card register-card">
+        <h1>Datos del ticket</h1>
+
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Pedido relacionado</label>
+                    {{ form.pedido }}
+                    {{ form.pedido.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Tipo de problema</label>
+                    {{ form.tipo_problema }}
+                    {{ form.tipo_problema.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Asunto</label>
+                    {{ form.asunto }}
+                    {{ form.asunto.errors }}
+                </div>
+
+                <div class="form-group full">
+                    <label>Descripción</label>
+                    {{ form.descripcion }}
+                    {{ form.descripcion.errors }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary auth-button">
+                Registrar ticket
+            </button>
+
+            <a href="{% url 'support:my_tickets' %}" class="btn-secondary btn-full">
+                Ver mis tickets
+            </a>
+        </form>
+    </div>
+
+</section>
+
+{% endblock %}

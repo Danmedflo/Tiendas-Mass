@@ -1,0 +1,76 @@
+<!--
+Archivo: ticket_detail.html
+Aplicación: support
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista de detalle de ticket para el cliente.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Detalle del ticket | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Detalle del ticket</h1>
+    <p>Revisa la información y respuesta de soporte.</p>
+</section>
+
+<section class="support-detail-container">
+
+    <article class="profile-card">
+        <h2>{{ ticket.asunto }}</h2>
+
+        <div class="support-meta">
+            <span class="ticket-badge status-{{ ticket.estado|lower }}">
+                {{ ticket.get_estado_display }}
+            </span>
+
+            <span class="ticket-badge priority-{{ ticket.prioridad|lower }}">
+                Prioridad {{ ticket.get_prioridad_display }}
+            </span>
+        </div>
+
+        <div class="order-info">
+            <p><strong>Tipo de problema:</strong> {{ ticket.tipo_problema }}</p>
+
+            {% if ticket.pedido %}
+                <p><strong>Pedido relacionado:</strong> {{ ticket.pedido.numero_pedido }}</p>
+            {% else %}
+                <p><strong>Pedido relacionado:</strong> No aplica</p>
+            {% endif %}
+
+            <p><strong>Fecha de creación:</strong> {{ ticket.fecha_creacion }}</p>
+
+            {% if ticket.fecha_cierre %}
+                <p><strong>Fecha de cierre:</strong> {{ ticket.fecha_cierre }}</p>
+            {% endif %}
+        </div>
+
+        <h3>Descripción del problema</h3>
+        <div class="support-box">
+            {{ ticket.descripcion }}
+        </div>
+
+        <h3>Respuesta de soporte</h3>
+
+        {% if ticket.respuesta %}
+            <div class="support-response">
+                {{ ticket.respuesta }}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>Sin respuesta todavía</h3>
+                <p>El equipo de soporte aún no ha respondido este ticket.</p>
+            </div>
+        {% endif %}
+
+        <a href="{% url 'support:my_tickets' %}" class="btn-secondary btn-full">
+            Volver a mis tickets
+        </a>
+    </article>
+
+</section>
+
+{% endblock %}
