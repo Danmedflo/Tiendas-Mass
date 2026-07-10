@@ -7,7 +7,7 @@
     <title>{% block title %}Tiendas Mass{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=40">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=50">
 </head>
 
 <body>
@@ -26,32 +26,26 @@
             {% if user.is_authenticated %}
 
                 {% if user.is_staff or user.is_superuser %}
-                    <li><a href="{% url 'reports:dashboard' %}">Dashboard</a></li>
-                    <li><a href="{% url 'support:admin_ticket_list' %}">Soporte</a></li>
-                    <li><a href="/admin/">Panel Django</a></li>
-
                     <li class="user-dropdown">
                         <details>
                             <summary>
-                                Hola, {{ user.first_name|default:user.username }}
+                                Administrador
                             </summary>
 
                             <div class="dropdown-menu">
                                 <a href="{% url 'reports:dashboard' %}">Dashboard</a>
                                 <a href="{% url 'support:admin_ticket_list' %}">Soporte administrativo</a>
-                                <a href="/admin/">Panel administrador</a>
+                                <a href="/admin/">Panel Django</a>
                                 <a href="{% url 'accounts:logout' %}" class="logout-link">Cerrar sesión</a>
                             </div>
                         </details>
                     </li>
 
                 {% elif user.perfil.rol == 'REPARTIDOR' %}
-                    <li><a href="{% url 'delivery:assigned_list' %}">Mis entregas</a></li>
-
                     <li class="user-dropdown">
                         <details>
                             <summary>
-                                Hola, {{ user.first_name|default:user.username }}
+                                Repartidor
                             </summary>
 
                             <div class="dropdown-menu">
@@ -62,9 +56,6 @@
                     </li>
 
                 {% else %}
-                    <li><a href="{% url 'accounts:my_orders' %}">Mis pedidos</a></li>
-                    <li><a href="{% url 'support:my_tickets' %}">Soporte</a></li>
-
                     <li class="user-dropdown">
                         <details>
                             <summary>
@@ -74,7 +65,7 @@
                             <div class="dropdown-menu">
                                 <a href="{% url 'accounts:profile' %}">Mi perfil</a>
                                 <a href="{% url 'accounts:my_orders' %}">Mis pedidos</a>
-                                <a href="{% url 'support:my_tickets' %}">Mis tickets</a>
+                                <a href="{% url 'support:my_tickets' %}">Soporte</a>
                                 <a href="{% url 'support:create_ticket' %}">Nuevo ticket</a>
                                 <a href="{% url 'accounts:logout' %}" class="logout-link">Cerrar sesión</a>
                             </div>
