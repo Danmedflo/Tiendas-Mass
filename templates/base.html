@@ -7,7 +7,7 @@
     <title>{% block title %}Tiendas Mass{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=20">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=40">
 </head>
 
 <body>
@@ -84,7 +84,6 @@
 
             {% else %}
                 <li><a href="{% url 'accounts:login' %}">Login</a></li>
-                <li><a href="{% url 'accounts:register' %}">Registro</a></li>
             {% endif %}
         </ul>
     </nav>

@@ -3,7 +3,7 @@ Archivo: register.html
 Aplicación: accounts
 Proyecto: Sistema Web Tiendas Mass
 Autor: Daniel Medina
-Descripción: Vista para registrar nuevos clientes.
+Descripción: Vista profesional para registrar nuevos clientes.
 -->
 
 {% extends 'base.html' %}
@@ -12,11 +12,73 @@ Descripción: Vista para registrar nuevos clientes.
 
 {% block content %}
 
-<section class="auth-container">
+<section class="register-page">
 
-    <div class="auth-card register-card">
-        <h1>Crear cuenta</h1>
-        <p>Regístrate para comprar productos en Tienda Mass.</p>
+    <div class="register-header">
+        <h1>Crear mi cuenta</h1>
+        <p>Únete a Tienda Mass y disfruta compras rápidas, seguras y convenientes.</p>
+    </div>
+
+    <section class="register-benefits-panel">
+        <h2>Beneficios de registrarte</h2>
+
+        <div class="register-benefits-grid">
+            <div>
+                <h3>Entrega rápida</h3>
+                <p>Recibe tus productos en tu dirección.</p>
+            </div>
+
+            <div>
+                <h3>Pagos seguros</h3>
+                <p>Yape, Plin, tarjeta y contra entrega.</p>
+            </div>
+
+            <div>
+                <h3>Ofertas exclusivas</h3>
+                <p>Accede a promociones para clientes.</p>
+            </div>
+
+            <div>
+                <h3>Seguimiento 24/7</h3>
+                <p>Revisa el estado de tus pedidos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="register-card-modern">
+
+        <div class="register-card-header">
+            <h2>Formulario de registro</h2>
+            <p>Completa tus datos para crear tu cuenta.</p>
+        </div>
+
+        <div class="register-progress">
+            <div class="progress-line">
+                <span></span>
+            </div>
+
+            <div class="progress-steps">
+                <div class="active">
+                    <span>1</span>
+                    <p>Datos personales</p>
+                </div>
+
+                <div class="active">
+                    <span>2</span>
+                    <p>Contacto</p>
+                </div>
+
+                <div>
+                    <span>3</span>
+                    <p>Seguridad</p>
+                </div>
+
+                <div>
+                    <span>4</span>
+                    <p>Verificación</p>
+                </div>
+            </div>
+        </div>
 
         {% if form.non_field_errors %}
             <div class="alert error">
@@ -24,73 +86,92 @@ Descripción: Vista para registrar nuevos clientes.
             </div>
         {% endif %}
 
-        <form method="post" class="auth-form">
+        <form method="post" class="auth-form register-modern-form">
             {% csrf_token %}
 
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Nombres</label>
-                    {{ form.nombres }}
-                    {{ form.nombres.errors }}
-                </div>
+            <div class="register-section">
+                <h3>Datos personales</h3>
 
-                <div class="form-group">
-                    <label>Apellidos</label>
-                    {{ form.apellidos }}
-                    {{ form.apellidos.errors }}
-                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombres *</label>
+                        {{ form.nombres }}
+                        {{ form.nombres.errors }}
+                    </div>
 
-                <div class="form-group">
-                    <label>DNI</label>
-                    {{ form.dni }}
-                    {{ form.dni.errors }}
-                </div>
+                    <div class="form-group">
+                        <label>Apellidos *</label>
+                        {{ form.apellidos }}
+                        {{ form.apellidos.errors }}
+                    </div>
 
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    {{ form.telefono }}
-                    {{ form.telefono.errors }}
-                </div>
+                    <div class="form-group">
+                        <label>DNI *</label>
+                        {{ form.dni }}
+                        {{ form.dni.errors }}
+                    </div>
 
-                <div class="form-group full">
-                    <label>Email</label>
-                    {{ form.email }}
-                    {{ form.email.errors }}
-                </div>
-
-                <div class="form-group full">
-                    <label>Dirección</label>
-                    {{ form.direccion }}
-                    {{ form.direccion.errors }}
-                </div>
-
-                <div class="form-group full">
-                    <label>Distrito</label>
-                    {{ form.distrito }}
-                    {{ form.distrito.errors }}
-                </div>
-
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    {{ form.password1 }}
-                    {{ form.password1.errors }}
-                </div>
-
-                <div class="form-group">
-                    <label>Confirmar contraseña</label>
-                    {{ form.password2 }}
-                    {{ form.password2.errors }}
+                    <div class="form-group">
+                        <label>Teléfono *</label>
+                        {{ form.telefono }}
+                        {{ form.telefono.errors }}
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary auth-button">Crear cuenta</button>
+            <div class="register-section">
+                <h3>Contacto y dirección</h3>
+
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Email *</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Dirección *</label>
+                        {{ form.direccion }}
+                        {{ form.direccion.errors }}
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Distrito *</label>
+                        {{ form.distrito }}
+                        {{ form.distrito.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="register-section">
+                <h3>Seguridad</h3>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Contraseña *</label>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirmar contraseña *</label>
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary auth-button">
+                Crear cuenta
+            </button>
+
+            <p class="auth-link">
+                ¿Ya tienes cuenta?
+                <a href="{% url 'accounts:login' %}">Inicia sesión aquí</a>
+            </p>
         </form>
 
-        <p class="auth-link">
-            ¿Ya tienes cuenta?
-            <a href="{% url 'accounts:login' %}">Inicia sesión</a>
-        </p>
-    </div>
+    </section>
 
 </section>
 
