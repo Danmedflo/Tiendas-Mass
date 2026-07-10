@@ -3,7 +3,7 @@ Archivo: product_list.html
 Aplicación: catalog
 Proyecto: Sistema Web Tiendas Mass
 Autor: Daniel Medina
-Descripción: Vista del catálogo de productos con filtros, búsqueda y ordenamiento.
+Descripción: Vista del catálogo de productos con filtros, búsqueda, ordenamiento y cantidad.
 -->
 
 {% extends 'base.html' %}
@@ -116,6 +116,7 @@ Descripción: Vista del catálogo de productos con filtros, búsqueda y ordenami
                 {% endif %}
 
                 <div class="product-actions">
+
                     <a href="{% url 'catalog:product_detail' producto.id %}" class="btn-detail">
                         Ver detalle
                     </a>
@@ -123,8 +124,24 @@ Descripción: Vista del catálogo de productos con filtros, búsqueda y ordenami
                     {% if producto.stock > 0 %}
                         <form method="post" action="{% url 'orders:add_to_cart' producto.id %}" class="add-cart-form">
                             {% csrf_token %}
-                            <input type="hidden" name="cantidad" value="1">
-                            <button type="submit" class="btn-cart">Agregar</button>
+
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+                            <div class="mini-cart-controls">
+                                <input
+                                    type="number"
+                                    name="cantidad"
+                                    min="1"
+                                    max="{{ producto.stock }}"
+                                    value="1"
+                                    class="mini-quantity"
+                                    aria-label="Cantidad"
+                                >
+
+                                <button type="submit" class="btn-cart">
+                                    Agregar
+                                </button>
+                            </div>
                         </form>
                     {% else %}
                         <button class="btn-disabled" disabled>No disponible</button>

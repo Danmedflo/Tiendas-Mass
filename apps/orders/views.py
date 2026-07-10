@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from apps.catalog.models import Producto
 from apps.accounts.models import Cliente
@@ -27,11 +28,29 @@ from .services import (
 )
 
 
+def obtener_url_retorno(request, default='catalog:product_list'):
+    """
+    Obtiene una URL segura para retornar después de agregar un producto.
+    """
+
+    next_url = request.POST.get('next') or request.GET.get('next') or request.META.get('HTTP_REFERER')
+
+    if next_url and url_has_allowed_host_and_scheme(
+        url=next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure()
+    ):
+        return next_url
+
+    return default
+
+
 @login_required
 def cart_detail(request):
     """
     Muestra el contenido actual del carrito.
     """
+
     carrito = obtener_carrito(request)
     resumen = calcular_items_carrito(carrito)
 
@@ -43,15 +62,20 @@ def add_to_cart(request, producto_id):
     """
     Agrega un producto al carrito o incrementa su cantidad.
     """
+
     producto = get_object_or_404(Producto, id=producto_id, activo=True)
+    retorno = obtener_url_retorno(request)
 
     if producto.stock <= 0:
         messages.error(request, 'Este producto no tiene stock disponible.')
-        return redirect('catalog:product_list')
+        return redirect(retorno)
 
     carrito = obtener_carrito(request)
 
-    cantidad = int(request.POST.get('cantidad', 1))
+    try:
+        cantidad = int(request.POST.get('cantidad', 1))
+    except (TypeError, ValueError):
+        cantidad = 1
 
     if cantidad <= 0:
         cantidad = 1
@@ -62,13 +86,16 @@ def add_to_cart(request, producto_id):
 
     if nueva_cantidad > producto.stock:
         nueva_cantidad = producto.stock
-        messages.warning(request, f'Solo hay {producto.stock} unidades disponibles de {producto.nombre}.')
+        messages.warning(
+            request,
+            f'Solo hay {producto.stock} unidades disponibles de {producto.nombre}.'
+        )
 
     carrito[producto_id_str] = nueva_cantidad
     guardar_carrito(request, carrito)
 
     messages.success(request, f'{producto.nombre} fue agregado al carrito.')
-    return redirect('orders:cart_detail')
+    return redirect(retorno)
 
 
 @login_required
@@ -76,10 +103,15 @@ def update_cart(request, producto_id):
     """
     Actualiza la cantidad de un producto dentro del carrito.
     """
+
     producto = get_object_or_404(Producto, id=producto_id, activo=True)
     carrito = obtener_carrito(request)
 
-    cantidad = int(request.POST.get('cantidad', 1))
+    try:
+        cantidad = int(request.POST.get('cantidad', 1))
+    except (TypeError, ValueError):
+        cantidad = 1
+
     producto_id_str = str(producto.id)
 
     if cantidad <= 0:
@@ -104,6 +136,7 @@ def remove_from_cart(request, producto_id):
     """
     Elimina un producto específico del carrito.
     """
+
     carrito = obtener_carrito(request)
     producto_id_str = str(producto_id)
 
@@ -120,6 +153,7 @@ def checkout(request):
     """
     Confirma la compra, registra el pedido y descuenta stock.
     """
+
     carrito = obtener_carrito(request)
 
     if not carrito:
@@ -195,6 +229,7 @@ def order_success(request, pedido_id):
     """
     Muestra la confirmación de un pedido registrado.
     """
+
     pedido = get_object_or_404(
         Pedido.objects.prefetch_related('detalles__producto'),
         id=pedido_id,

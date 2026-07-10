@@ -52,14 +52,18 @@ Descripción: Vista de detalle de un producto seleccionado.
                 <form method="post" action="{% url 'orders:add_to_cart' producto.id %}" class="detail-cart-form">
                     {% csrf_token %}
 
-                    <div class="form-group">
-                        <label>Cantidad</label>
-                        <input type="number" name="cantidad" min="1" max="{{ producto.stock }}" value="1">
-                    </div>
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
 
-                    <button type="submit" class="btn-primary">
-                        Agregar al carrito
-                    </button>
+                    <div class="detail-buy-box">
+                        <div class="form-group">
+                            <label>Cantidad</label>
+                            <input type="number" name="cantidad" min="1" max="{{ producto.stock }}" value="1">
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Agregar al carrito
+                        </button>
+                    </div>
                 </form>
             {% endif %}
         </div>
