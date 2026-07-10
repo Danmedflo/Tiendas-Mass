@@ -1,0 +1,196 @@
+<!--
+Archivo: catalog_admin.html
+Aplicación: catalog
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Vista administrativa para gestionar productos.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Gestión de catálogo | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Gestión de catálogo</h1>
+    <p>Administra productos, categorías, precios, stock y estado del catálogo.</p>
+</section>
+
+<section class="admin-catalog-container">
+
+    <div class="admin-catalog-actions">
+        <a href="{% url 'catalog:product_create' %}" class="btn-primary">+ Nuevo producto</a>
+        <a href="{% url 'catalog:category_create' %}" class="btn-secondary">+ Nueva categoría</a>
+        <a href="{% url 'catalog:export_products_csv' %}" class="btn-secondary">Exportar CSV</a>
+    </div>
+
+    <div class="admin-stats-grid">
+        <article class="admin-stat-card">
+            <div>
+                <h3>{{ total_productos }}</h3>
+                <p>Total productos</p>
+            </div>
+        </article>
+
+        <article class="admin-stat-card">
+            <div>
+                <h3>{{ total_categorias }}</h3>
+                <p>Categorías</p>
+            </div>
+        </article>
+
+        <article class="admin-stat-card">
+            <div>
+                <h3>{{ total_stock }}</h3>
+                <p>Unidades en stock</p>
+            </div>
+        </article>
+
+        <article class="admin-stat-card warning">
+            <div>
+                <h3>{{ stock_bajo }}</h3>
+                <p>Alertas stock bajo</p>
+            </div>
+        </article>
+    </div>
+
+    <div class="admin-panel-card">
+        <h2>Filtros y búsqueda</h2>
+
+        <form method="get" class="admin-filter-form">
+            <div class="form-group">
+                <label>Buscar producto</label>
+                <input type="text" name="q" value="{{ busqueda }}" placeholder="Nombre, código o descripción...">
+            </div>
+
+            <div class="form-group">
+                <label>Categoría</label>
+                <select name="categoria">
+                    <option value="">Todas las categorías</option>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}" {% if categoria_id == categoria.id|stringformat:"s" %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="activo" {% if estado == 'activo' %}selected{% endif %}>Activo</option>
+                    <option value="inactivo" {% if estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Stock</label>
+                <select name="stock">
+                    <option value="">Todos los niveles</option>
+                    <option value="disponible" {% if stock == 'disponible' %}selected{% endif %}>Disponible</option>
+                    <option value="agotado" {% if stock == 'agotado' %}selected{% endif %}>Agotado</option>
+                    <option value="bajo" {% if stock == 'bajo' %}selected{% endif %}>Stock bajo</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Buscar</button>
+            <a href="{% url 'catalog:admin_product_catalog' %}" class="btn-secondary">Limpiar</a>
+        </form>
+    </div>
+
+    <div class="admin-panel-card">
+        <h2>Importar productos</h2>
+
+        <form method="post" action="{% url 'catalog:import_products_csv' %}" enctype="multipart/form-data" class="admin-import-form">
+            {% csrf_token %}
+            {{ import_form.archivo }}
+            <button type="submit" class="btn-primary">Importar CSV</button>
+        </form>
+
+        <p class="admin-help">
+            Columnas sugeridas: codigo, nombre, categoria, precio, stock, stock_minimo, activo.
+        </p>
+    </div>
+
+    <div class="admin-table-card">
+        <div class="admin-table-header">
+            <h2>Lista de productos</h2>
+            <p>Mostrando {{ productos.count }} producto(s)</p>
+        </div>
+
+        <table class="report-table admin-product-table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Producto</th>
+                    <th>Código</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for producto in productos %}
+                    <tr class="{% if producto.stock <= producto.stock_minimo %}row-warning{% endif %}">
+                        <td>
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="admin-product-img">
+                            {% else %}
+                                <div class="admin-no-img">🛒</div>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <strong>{{ producto.nombre }}</strong>
+                            <br>
+                            <small>{{ producto.descripcion|default:"Sin descripción"|truncatewords:8 }}</small>
+                        </td>
+
+                        <td>{{ producto.codigo }}</td>
+                        <td>{{ producto.categoria.nombre }}</td>
+                        <td>S/ {{ producto.precio }}</td>
+
+                        <td>
+                            {% if producto.stock <= producto.stock_minimo %}
+                                <span class="stock-badge stock-low">{{ producto.stock }} und.</span>
+                            {% elif producto.stock == 0 %}
+                                <span class="stock-badge stock-empty">0 und.</span>
+                            {% else %}
+                                <span class="stock-badge stock-ok">{{ producto.stock }} und.</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if producto.activo %}
+                                <span class="status-pill active">Activo</span>
+                            {% else %}
+                                <span class="status-pill inactive">Inactivo</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="admin-actions">
+                                <a href="{% url 'catalog:product_edit' producto.id %}" class="action-btn edit" title="Editar">✏️</a>
+                                <a href="{% url 'catalog:product_toggle_status' producto.id %}" class="action-btn status" title="Activar o desactivar">🔁</a>
+                                <a href="{% url 'catalog:product_detail' producto.id %}" class="action-btn view" title="Ver">👁️</a>
+                                <a href="{% url 'catalog:product_delete' producto.id %}" class="action-btn delete" title="Eliminar">🗑️</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8">No se encontraron productos.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+{% endblock %}

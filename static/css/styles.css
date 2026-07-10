@@ -2022,3 +2022,261 @@ table tr:last-child td {
         padding-right: 20px;
     }
 }
+
+/* ================================
+   GESTIÓN ADMINISTRATIVA DE CATÁLOGO
+================================ */
+
+.admin-catalog-container,
+.admin-form-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto 80px;
+    animation: fadeInUp 0.35s ease;
+}
+
+.admin-catalog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.admin-stat-card {
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    padding: 22px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(31, 79, 154, 0.08);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.admin-stat-card span {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background-color: var(--mass-blue-soft);
+    color: var(--mass-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.admin-stat-card.warning span {
+    background-color: #fff7ed;
+    color: var(--mass-warning);
+}
+
+.admin-stat-card h3 {
+    color: var(--mass-blue);
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.admin-stat-card p {
+    color: var(--mass-muted);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.admin-panel-card,
+.admin-table-card,
+.admin-form-card {
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(31, 79, 154, 0.08);
+    margin-bottom: 24px;
+}
+
+.admin-panel-card h2,
+.admin-table-card h2 {
+    color: var(--mass-blue);
+    font-weight: 900;
+    margin-bottom: 16px;
+}
+
+.admin-filter-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto auto;
+    gap: 14px;
+    align-items: end;
+}
+
+.admin-import-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+}
+
+.admin-help {
+    color: var(--mass-muted);
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.admin-table-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.admin-table-header p {
+    color: var(--mass-muted);
+    font-weight: 800;
+}
+
+.admin-product-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 10px;
+    background-color: #f3f6fb;
+    padding: 4px;
+}
+
+.admin-no-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background-color: #f3f6fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.stock-badge,
+.status-pill {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.stock-ok {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.stock-low {
+    background-color: #fff7ed;
+    color: #92400e;
+}
+
+.stock-empty {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-pill.active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-pill.inactive {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+.action-btn.edit {
+    background-color: #e0f2fe;
+}
+
+.action-btn.status {
+    background-color: #fef9c3;
+}
+
+.action-btn.view {
+    background-color: #dbeafe;
+}
+
+.action-btn.delete {
+    background-color: #fee2e2;
+}
+
+.admin-form-card {
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+.admin-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.checkbox-field label {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-field input {
+    width: auto;
+}
+
+@media (max-width: 1000px) {
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-filter-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-table-card {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 700px) {
+    .admin-stats-grid,
+    .admin-filter-form,
+    .admin-import-form {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-table-header,
+    .admin-form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-form-actions .btn-primary,
+    .admin-form-actions .btn-secondary {
+        width: 100%;
+    }
+}

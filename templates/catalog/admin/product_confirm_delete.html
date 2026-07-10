@@ -1,0 +1,47 @@
+<!--
+Archivo: product_confirm_delete.html
+Aplicación: catalog
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Confirmación para retirar producto del catálogo público.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}Eliminar producto | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Eliminar producto</h1>
+    <p>Esta acción retirará el producto del catálogo público.</p>
+</section>
+
+<section class="success-container">
+
+    <div class="success-card">
+        <h1>⚠ Confirmar acción</h1>
+
+        <p>
+            ¿Deseas retirar el producto <strong>{{ producto.nombre }}</strong> del catálogo?
+        </p>
+
+        <div class="order-info">
+            <p><strong>Código:</strong> {{ producto.codigo }}</p>
+            <p><strong>Categoría:</strong> {{ producto.categoria.nombre }}</p>
+            <p><strong>Precio:</strong> S/ {{ producto.precio }}</p>
+            <p><strong>Stock:</strong> {{ producto.stock }}</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary btn-full">Sí, retirar producto</button>
+            <a href="{% url 'catalog:admin_product_catalog' %}" class="btn-secondary btn-full">
+                Cancelar
+            </a>
+        </form>
+    </div>
+
+</section>
+
+{% endblock %}

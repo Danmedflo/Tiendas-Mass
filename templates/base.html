@@ -7,7 +7,7 @@
     <title>{% block title %}Tiendas Mass{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=70">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=80">
 </head>
 
 <body>
@@ -34,6 +34,7 @@
 
                             <div class="dropdown-menu">
                                 <a href="{% url 'reports:dashboard' %}">Dashboard</a>
+                                <a href="{% url 'catalog:admin_product_catalog' %}">Gestionar catálogo</a>
                                 <a href="{% url 'support:admin_ticket_list' %}">Soporte administrativo</a>
                                 <a href="/admin/">Panel Django</a>
                                 <a href="{% url 'accounts:logout' %}" class="logout-link">Cerrar sesión</a>

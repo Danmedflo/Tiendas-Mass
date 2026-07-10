@@ -1,0 +1,52 @@
+<!--
+Archivo: category_form.html
+Aplicación: catalog
+Proyecto: Sistema Web Tiendas Mass
+Autor: Daniel Medina
+Descripción: Formulario para crear categorías.
+-->
+
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }} | Tiendas Mass{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>{{ titulo }}</h1>
+    <p>Registra una categoría para organizar los productos del catálogo.</p>
+</section>
+
+<section class="admin-form-container">
+
+    <form method="post" class="admin-form-card">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <div class="form-group full">
+                <label>Nombre</label>
+                {{ form.nombre }}
+                {{ form.nombre.errors }}
+            </div>
+
+            <div class="form-group full">
+                <label>Descripción</label>
+                {{ form.descripcion }}
+                {{ form.descripcion.errors }}
+            </div>
+
+            <div class="form-group checkbox-field">
+                <label>{{ form.activo }} Categoría activa</label>
+                {{ form.activo.errors }}
+            </div>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="btn-primary">{{ boton }}</button>
+            <a href="{% url 'catalog:admin_product_catalog' %}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+
+</section>
+
+{% endblock %}
